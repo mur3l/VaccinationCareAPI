@@ -8,8 +8,13 @@ const app = express();
 const swaggerUI = require('swagger-ui-express');
 const yamljs = require('yamljs');
 
+<<<<<<< HEAD
 const swaggerDocument = require('./docs/swagger.json');
 //const swaggerDocument = yamljs.load('./docs/swagger.yaml');
+=======
+//const swaggerDocument = yamljs.load('./docs/swagger.yaml');
+const swaggerDocument = require('./docs/swagger.json');
+>>>>>>> f77d720b9d2c539580a6b6de150649f46491e33f
 
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
