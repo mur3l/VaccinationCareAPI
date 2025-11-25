@@ -1,0 +1,30 @@
+swagger: '2.0'
+info:
+    title: VaccinationCare
+    version: 1.0.0
+    description: Hinda teenust
+paths:
+    /vaccinations:
+        get:
+            tags:
+                - vaccinations
+            parameters:
+                -
+                    name: body
+                    schema:
+                        type: array
+                        items:
+                            type: string
+                    in: body
+                    required: true
+            responses:
+                '200':
+                    description: Returns a list of Vaccinations
+                    examples:
+                        application/json: |-
+                            [
+                                "Terminator 2",
+                                "Minions",
+                                "Devils wears a Prada",
+                            ]
+            description: Return all Vaccinations that are registered in API
