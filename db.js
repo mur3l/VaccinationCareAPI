@@ -23,10 +23,11 @@ async() => {
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
+db.vaccination = require("./models/Vaccination.js")(sequelize, DataTypes);
 
-const sync = (async () => {
-    await sequelize.sync ({alter: true});
-    console.log('DB sync has been completed.');
+const sync = (async ()=> {
+    await sequelize.sync({alter: true});
+    console.log('DB sync has been completed');
 })
 
-module.exports = {db, sync};
+module.exports = (db, sync);
