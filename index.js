@@ -23,7 +23,7 @@ app.use(express.json());
 require("./routes/vaccinationRoutes")(app);
 
 app.listen(port, async () => {
-    if (process.env.SYNC === 'true') {await sync();}
+    if (process.env.SYNC === 'true') {await sync()}
     console.log(`API on aadressil: http://${host}:${port}`);
 })
 

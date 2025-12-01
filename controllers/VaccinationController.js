@@ -1,11 +1,18 @@
-const {db} = require ('../db');
-const Vaccination = require('../models/Vaccination');
-const utilities = require ('./Utilities')
+const db = require("../db");
 
 exports.getAll = async (req, res) => {
-    const vaccinations = await db.files.findAll();
-    console.log("getAll: "+vaccinations)
-    res
-    .status(200)
-    .send(FileSystem.map(({VaccinationID, Name}) => {return{VaccinationID, Name}}))
-}
+    try {
+        const vaccinations = await db.vaccination.findAll();
+
+        res.status(200).json(
+            vaccinations.map(v => ({
+                VaccineID: v.VaccineID,
+                Name: v.Name,
+                Description: v.Description
+            }))
+        );
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+};
