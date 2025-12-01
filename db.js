@@ -2,8 +2,8 @@ const {Sequelize, DataTypes} = require('sequelize');
 
 const sequelize = new Sequelize(
     process.env.DB_DBNAME,
-    process.env.DB.USERNAME,
-    process.env.DB.USERPASS,
+    process.env.DB_USERNAME,
+    process.env.DB_USERPASS,
     {
         host: process.env.DB_HOSTNAME,
         dialect: 'mariadb',

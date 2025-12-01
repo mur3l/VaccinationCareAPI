@@ -1,7 +1,7 @@
 const {DataTypes} = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-    const Vaccination = this.sequelize.define(
+    const Vaccination = sequelize.define(
         'Vaccine', {
             VaccineID: {
                 type: DataTypes.UUID,
@@ -18,6 +18,6 @@ module.exports = (sequelize, DataTypes) => {
             },
         }
     )
-    console.log(Vaccination === this.sequelize.models.Vaccination)
-    return Vaccination
+    console.log(Vaccination === sequelize.models.Vaccination);
+    return Vaccination;
 }
