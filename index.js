@@ -8,12 +8,24 @@ const app = express();
 const swaggerUI = require('swagger-ui-express');
 const yamljs = require('yamljs');
 
-//const swaggerDocument = yamljs.load('./docs/swagger.yaml');
-const swaggerDocument = require('./docs/swagger.json');
+const swaggerDocument = yamljs.load('./docs/swagger.yaml');
+//const swaggerDocument = require('./docs/swagger.json');
+const {sync} = require("./db");
 
+//app('/vaccinations', (req, res) => {
+//  res.send(["Terminator2", "Minions", "Devil wears a prada"])    
+//})
+
+app.use(cors());
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+app.use(express.json());
 
-app.listen(port, () => {
-    console.log(`API on aadressil: http://localhost:${port}`);
+require("./routes/vaccinationRoutes")(app);
+
+app.listen(port, async () => {
+    if (process.env.SYNC === 'true') {await sync();}
+    console.log(`API on aadressil: http://${host}:${port}`);
 })
+
+//Material Icon Theme
  
