@@ -27,7 +27,6 @@ paths:
         post:
             tags:
                 - vaccine
-
             parameters:
                 -
                     name: body
@@ -47,16 +46,24 @@ paths:
                         $ref: '#/definitions/error'
             summary: Create a new <Vaccine> into the app
             description: 'Create a new <Vaccine> instance with its required details, for futher usage.'
-    /vaccinations/(VaccineID):
+    '/vaccinations/{VaccineID}':
         get:
             tags:
                 - vaccine
             responses:
                 '200':
-                    description: Returns all detailsof the given <Vaccine>
+                    description: Returns all details of the given <Vaccine>
+
             operationId: VaccineID
             summary: Get full details of a <Vaccine>
             description: Will return all details of a given <Vaccine> based on VaccineID given
+        parameters:
+            -
+                name: VaccineID
+                description: ID of Vaccine
+                in: path
+                required: true
+                type: string
 definitions:
     new-Vaccine:
         title: Root Type for new-Vaccine

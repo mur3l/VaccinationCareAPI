@@ -1,6 +1,6 @@
 const db = require("../db");
-console.log("Loaded DB models:", Object.keys(db));
 const Utilities = require("./Utilities")
+const UUID = require("uuid")
 
 exports.getAll = async (req, res) => {
     try {
@@ -38,6 +38,7 @@ async (req,res) => {
     }
 
     const newVaccine = {
+        VaccineID: UUID.v7(),
         Name: req.body.Name,
         Description: req.body.Description,
         Clinic: req.body.Clinic,
