@@ -8,18 +8,13 @@ paths:
         get:
             tags:
                 - vaccinations
-            parameters:
-                -
-                    name: body
+            responses:
+                '200':
+                    description: Returns a list of Vaccinations
                     schema:
                         type: array
                         items:
                             type: string
-                    in: body
-                    required: true
-            responses:
-                '200':
-                    description: Returns a list of Vaccinations
                     examples:
                         application/json: |-
                             [
@@ -27,4 +22,76 @@ paths:
                                 "Minions",
                                 "Devils wears a Prada",
                             ]
+            summary: Get all the <Vaccine> in API
             description: Return all Vaccinations that are registered in API
+        post:
+            parameters:
+                -
+                    name: body
+                    description: The <Vaccine> that is to be created.
+                    schema:
+                        $ref: '#/definitions/new-Vaccine'
+                    in: body
+                    required: true
+            responses:
+                '201':
+                    description: Send 201 when <Vaccine> is successfully added to the database.
+                    schema:
+                        $ref: '#/definitions/new-Vaccine'
+                '400':
+                    description: 'Missing some parameter, please review your request data.'
+                    schema:
+                        $ref: '#/definitions/error'
+            summary: Create a new <Vaccine> into the app
+            description: 'Create a new <Vaccine> instance with its required details, for futher usage.'
+    /vaccinations/(VaccineID):
+        get:
+            tags:
+                - vaccine
+            responses:
+                '200':
+                    description: Returns all detailsof the given <Vaccine>
+            operationId: VaccineID
+            summary: Get full details of a <Vaccine>
+            description: Will return all details of a given <Vaccine> based on VaccineID given
+definitions:
+    new-Vaccine:
+        title: Root Type for new-Vaccine
+        description: ''
+        required:
+            - Appointment
+            - BestBefore
+            - Clinic
+            - Description
+            - Location
+            - Name
+        type: object
+        properties:
+            Name:
+                type: string
+            Description:
+                type: string
+            Clinic:
+                type: string
+            Appointment:
+                type: string
+            Location:
+                type: string
+            BestBefore:
+                type: string
+        example:
+            Name: NewVaccineName
+            Description: NewVaccineDescription
+            Clinic: NewVaccineClinic
+            Appointment: NewVaccineAppoitnment
+            Location: NewVaccineLocation
+            BestBefore: NewVaccineBestBefore
+    error:
+        title: Root Type for error
+        description: ''
+        type: object
+        properties:
+            error:
+                type: string
+        example:
+            error: Error MessageThis data type is currently a complex object

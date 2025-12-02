@@ -22,6 +22,34 @@ exports.getByID = async (req, res) => {
     if (!vaccination) {return res.status(404).send({error: 'Vaccination not found.'})}
 }
 
+exports.create = 
+async (req,res) => {
+    if (
+        !req.body.Name ||
+        !req.body.Description ||
+        !req.body.Vaccine ||
+        !req.body.Clinic ||
+        !req.body.Appointment ||
+        !req.body.Location ||
+        !req.body.BestBefore
+    ){
+        return res.status(400).send({error: 'Missing some parameter, please review your request data.'})
+    }
+
+    const newVaccine = {
+        Name: req.body.Name,
+        Description: req.body.Description,
+        Clinic: req.body.Clinic,
+        Appointment: req.body.Appointment,
+        Location: req.body.Location,
+        BestBefore: req.body.BestBefore
+    }
+
+    const createdVaccine = await db.vaccine.create(newVaccine);
+    return res
+    .location(`${Utilities.getBaseURL(req)}/vaccines/${createdVaccine.VaccineID}`).sendStatus(201);
+}
+
 const getVaccination = async (req, res) => {
     const idNumber =req.params.VaccineID;
     if(isNaN(idNumber)) {
