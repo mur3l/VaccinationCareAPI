@@ -20,3 +20,21 @@ exports.getAll = async (req, res) => {
     }
 };
 
+exports.getByID = async (req, res) => {
+    const vaccination = await getVaccination(req, res);
+    if (!vaccination) {return res.status(404).send({error: 'Vaccination not found.'})}
+}
+
+const getVaccination = async (req, res) => {
+    const idNumber =req.params.VaccineID;
+    if(isNaN(idNumber)) {
+        res.status(400).send({error:`Entered ID is not valid ${idNumber}`})
+        return null;
+    }
+    const vaccination = await db.vaccinations.findByPk(idNumber);
+    if(!vaccination) {
+        res.status(404).send({Error: `Film with this ID was not found ${idNumber}.`})
+        return null;
+    }
+    return vaccination;
+}
