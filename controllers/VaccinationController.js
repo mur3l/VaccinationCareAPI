@@ -1,4 +1,6 @@
 const db = require("../db");
+console.log("Loaded DB models:", Object.keys(db));
+const Utilities = require("./Utilities")
 
 exports.getAll = async (req, res) => {
     try {
@@ -27,7 +29,6 @@ async (req,res) => {
     if (
         !req.body.Name ||
         !req.body.Description ||
-        !req.body.Vaccine ||
         !req.body.Clinic ||
         !req.body.Appointment ||
         !req.body.Location ||
@@ -45,9 +46,9 @@ async (req,res) => {
         BestBefore: req.body.BestBefore
     }
 
-    const createdVaccine = await db.vaccine.create(newVaccine);
+    const createdVaccine = await db.vaccination.create(newVaccine);
     return res
-    .location(`${Utilities.getBaseURL(req)}/vaccines/${createdVaccine.VaccineID}`).sendStatus(201);
+    .location(`${Utilities.getBaseURL(req)}/vaccinations/${createdVaccine.VaccineID}`).sendStatus(201);
 }
 
 const getVaccination = async (req, res) => {
@@ -58,7 +59,7 @@ const getVaccination = async (req, res) => {
     }
     const vaccination = await db.vaccinations.findByPk(idNumber);
     if(!vaccination) {
-        res.status(404).send({Error: `Film with this ID was not found ${idNumber}.`})
+        res.status(404).send({Error: `Vaccine with this ID was not found ${idNumber}.`})
         return null;
     }
     return vaccination;

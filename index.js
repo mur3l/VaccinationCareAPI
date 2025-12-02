@@ -20,7 +20,7 @@ app.use(cors());
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use(express.json());
 
-require("./routes/vaccinationRoutes")(app);
+require("./routes/ksRoutes.js")(app);
 
 app.listen(port, async () => {
     if (process.env.SYNC === 'true') {await sync()}

@@ -7,7 +7,7 @@ paths:
     /vaccinations:
         get:
             tags:
-                - vaccinations
+                - vaccine
             responses:
                 '200':
                     description: Returns a list of Vaccinations
@@ -25,6 +25,9 @@ paths:
             summary: Get all the <Vaccine> in API
             description: Return all Vaccinations that are registered in API
         post:
+            tags:
+                - vaccine
+
             parameters:
                 -
                     name: body
