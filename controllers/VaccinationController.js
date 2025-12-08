@@ -24,7 +24,7 @@ exports.getByID = async (req, res) => {
     if (!vaccination) {return res.status(404).send({error: 'Vaccination not found.'})}
 }
 
-exports.create = 
+exports.deleteById = 
 async (req,res) => {
     if (
         !req.body.Name ||
@@ -50,6 +50,13 @@ async (req,res) => {
     const createdVaccine = await db.vaccination.create(newVaccine);
     return res
     .location(`${Utilities.getBaseURL(req)}/vaccinations/${createdVaccine.VaccineID}`).sendStatus(201);
+    const vaccineToBeDeleted = await getVaccination(req,res);
+    if (!vaccineToBeDeleted) 
+        {
+            return;
+        }
+    await vaccineToBeDeleted.destroy();
+    res.status(204).send({error: "No Content"})
 }
 
 const getVaccination = async (req, res) => {
@@ -60,7 +67,7 @@ const getVaccination = async (req, res) => {
     }
     const vaccination = await db.vaccinations.findByPk(idNumber);
     if(!vaccination) {
-        res.status(404).send({Error: `Vaccine with this ID was not found ${idNumber}.`})
+        res.status(404).send({Error: `Film with this ID was not found ${idNumber}.`})
         return null;
     }
     return vaccination;

@@ -57,6 +57,39 @@ paths:
             operationId: VaccineID
             summary: Get full details of a <Vaccine>
             description: Will return all details of a given <Vaccine> based on VaccineID given
+            operationId: VaccineID
+            summary: Get full details of a <Vaccine>
+            description: Will return all details of a given <Vaccine> based on VaccineID given
+        delete:
+            tags:
+                - vaccine
+            parameters:
+                -
+                    name: body
+                    description: Id of <Vaccine> to be removed from the app.
+                    schema:
+                        $ref: '#/definitions/delete-Vaccine'
+                    in: body
+                    required: true
+            responses:
+                '204':
+                    description: Returns "No content" when remove of <Vaccine> is successful.
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: No Content
+                '404':
+                    description: 'Returns error, when <Vaccine> with specified ID does NOT exist'
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: Id not found
+            summary: Delete a <Vaccine> from the App
+            description: Deletes and entry from the app. NEVER TO BE SEEN AGAIN.
         parameters:
             -
                 name: VaccineID
@@ -105,3 +138,12 @@ definitions:
                 type: string
         example:
             error: Error MessageThis data type is currently a complex object
+    delete-Vaccine:
+        title: Root Type for delete-Vaccine
+        description: ''
+        type: object
+        properties:
+            VaccineID:
+                type: string
+        example:
+            VaccineID: 84c0f85e-dd2e-4b55-8945-a903b1b67811
