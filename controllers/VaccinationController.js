@@ -64,4 +64,4 @@ const getVaccination = async (req, res) => {
         return null;
     }
     return vaccination;
-}
+} 
