@@ -1,0 +1,23 @@
+{
+  "name": "vaccinationcareapi",
+  "version": "1.0.0",
+  "description": "Api and site, for vaccination for Estonian  market.\r --------------\r How to run this app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mur3l/VaccinationCareAPI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mur3l/VaccinationCareAPI/issues"
+  },
+  "homepage": "https://github.com/mur3l/VaccinationCareAPI#readme",
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
