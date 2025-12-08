@@ -24,7 +24,7 @@ exports.getByID = async (req, res) => {
     if (!vaccination) {return res.status(404).send({error: 'Vaccination not found.'})}
 }
 
-exports.deleteById = 
+exports.createById = 
 async (req,res) => {
     if (
         !req.body.Name ||
@@ -50,13 +50,17 @@ async (req,res) => {
     const createdVaccine = await db.vaccination.create(newVaccine);
     return res
     .location(`${Utilities.getBaseURL(req)}/vaccinations/${createdVaccine.VaccineID}`).sendStatus(201);
-    const vaccineToBeDeleted = await getVaccination(req,res);
-    if (!vaccineToBeDeleted) 
-        {
-            return;
-        }
-    await vaccineToBeDeleted.destroy();
-    res.status(204).send({error: "No Content"})
+}
+
+exports.deleteById = 
+async (req, res) => {
+vaccineToBeDeleted = await getVaccination(req,res);
+if (!vaccineToBeDeleted) 
+    {
+        return;
+    }
+await vaccineToBeDeleted.destroy();
+res.status(204).send({error: "No Content"})
 }
 
 const getVaccination = async (req, res) => {
