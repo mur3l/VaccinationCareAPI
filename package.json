@@ -4,7 +4,8 @@
   "description": "Api and site, for vaccination for Estonian  market.\r --------------\r How to run this app",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "starts": "concurrently \"cd backend-api && nodemon ."
   },
   "repository": {
     "type": "git",

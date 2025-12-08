@@ -53,13 +53,52 @@ paths:
             responses:
                 '200':
                     description: Returns all details of the given <Vaccine>
-
             operationId: VaccineID
             summary: Get full details of a <Vaccine>
             description: Will return all details of a given <Vaccine> based on VaccineID given
-            operationId: VaccineID
-            summary: Get full details of a <Vaccine>
-            description: Will return all details of a given <Vaccine> based on VaccineID given
+        put:
+            tags:
+                - vaccine
+            parameters:
+                -
+                    name: body
+                    description: Contains new data to be changed in the specified Vaccine
+                    schema:
+                        $ref: '#/definitions/new-Vaccine'
+                    in: body
+                    required: true
+            responses:
+                '201':
+                    description: Returns 201 upon succesful modification of Vaccine
+                    schema:
+                        $ref: '#/definitions/new-Vaccine'
+                    examples:
+                        application/json:
+                            -
+                                Name: ''
+                                Description: pu7
+                                Clinic: r
+                                Appointment: ''
+                                Location: ''
+                                BestBefore: au
+                '400':
+                    description: Returns bad request 400 when one or multiple required parameters are missing
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: Cannot change info because some parameter missing.
+                '404':
+                    description: >-
+                        Returns 404 when object Vaccine that is to be modified, is not found by the given
+                        VaccineID
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: Vaccine not found
         delete:
             tags:
                 - vaccine

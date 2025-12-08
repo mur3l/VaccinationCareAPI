@@ -24,7 +24,7 @@ exports.getByID = async (req, res) => {
     if (!vaccination) {return res.status(404).send({error: 'Vaccination not found.'})}
 }
 
-exports.createById = 
+exports.create = 
 async (req,res) => {
     if (
         !req.body.Name ||
@@ -54,13 +54,43 @@ async (req,res) => {
 
 exports.deleteById = 
 async (req, res) => {
-vaccineToBeDeleted = await getVaccination(req,res);
-if (!vaccineToBeDeleted) 
-    {
+    const vaccineToBeDeleted = await getVaccination(req,res);
+    if (!vaccineToBeDeleted) 
+        {
+            return;
+        }
+    await vaccineToBeDeleted.destroy();
+    res.status(204).send({error: "No Content"})
+}
+
+exports.modifyById = 
+async (req, res) => {
+    const vaccineToBeChanged = await getVaccination(req, res);
+    if (vaccineToBeChanged) {
         return;
     }
-await vaccineToBeDeleted.destroy();
-res.status(204).send({error: "No Content"})
+
+    if (
+        !req.body.Name ||
+        !req.body.Description ||
+        !req.body.Clinic ||
+        !req.body.Appointment ||
+        !req.body.Location ||
+        !req.body.BestBefore
+    ){
+        return res.status(400).send({error: 'Missing some parameter, please review your request data.'})
+    }
+
+    vaccineToBeChanged.Name = req.body.Name;
+    vaccineToBeChanged.Description = req.body.Description;
+    vaccineToBeChanged.Clinic = req.body.Clinic;
+    vaccineToBeChanged.Appointment = req.body.Appointment;
+    vaccineToBeChanged.Location = req.body.Location;
+    vaccineToBeChanged.BestBefore = req.body.BestBefore;
+    await vaccineToBeChanged.save();
+    return res
+    .location(`${Utilities.getBaseURL(req)}/vaccinations/${vaccineToBeChanged.VaccineID}`).sendStatus(201)
+    .send(vaccineToBeChanged);
 }
 
 const getVaccination = async (req, res) => {
@@ -71,7 +101,7 @@ const getVaccination = async (req, res) => {
     }
     const vaccination = await db.vaccinations.findByPk(idNumber);
     if(!vaccination) {
-        res.status(404).send({Error: `Film with this ID was not found ${idNumber}.`})
+        res.status(404).send({Error: `Vaccine with this ID was not found ${idNumber}.`})
         return null;
     }
     return vaccination;
