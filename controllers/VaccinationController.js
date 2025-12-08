@@ -1,7 +1,6 @@
 const db = require("../db");
-const Utilitiest = require("./Utilities");
-const UUID = ('uuid');
-
+const Utilities = require("./Utilities")
+const UUID = require("uuid")
 
 exports.getAll = async (req, res) => {
     try {
@@ -27,6 +26,30 @@ exports.getByID = async (req, res) => {
 
 exports.deleteById = 
 async (req,res) => {
+    if (
+        !req.body.Name ||
+        !req.body.Description ||
+        !req.body.Clinic ||
+        !req.body.Appointment ||
+        !req.body.Location ||
+        !req.body.BestBefore
+    ){
+        return res.status(400).send({error: 'Missing some parameter, please review your request data.'})
+    }
+
+    const newVaccine = {
+        VaccineID: UUID.v7(),
+        Name: req.body.Name,
+        Description: req.body.Description,
+        Clinic: req.body.Clinic,
+        Appointment: req.body.Appointment,
+        Location: req.body.Location,
+        BestBefore: req.body.BestBefore
+    }
+
+    const createdVaccine = await db.vaccination.create(newVaccine);
+    return res
+    .location(`${Utilities.getBaseURL(req)}/vaccinations/${createdVaccine.VaccineID}`).sendStatus(201);
     const vaccineToBeDeleted = await getVaccination(req,res);
     if (!vaccineToBeDeleted) 
         {
@@ -48,4 +71,4 @@ const getVaccination = async (req, res) => {
         return null;
     }
     return vaccination;
-}
+} 

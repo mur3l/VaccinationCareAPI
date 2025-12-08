@@ -53,6 +53,10 @@ paths:
             responses:
                 '200':
                     description: Returns all details of the given <Vaccine>
+
+            operationId: VaccineID
+            summary: Get full details of a <Vaccine>
+            description: Will return all details of a given <Vaccine> based on VaccineID given
             operationId: VaccineID
             summary: Get full details of a <Vaccine>
             description: Will return all details of a given <Vaccine> based on VaccineID given
