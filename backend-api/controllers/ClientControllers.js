@@ -4,13 +4,13 @@ const UUID = require('uuid')
 
 exports.create =
 async (req,res) => {
+    const { FullName, EmailAddress, PasswordHASH, PhoneNumber2FA } = req.body;
     if (
         !req.body.FullName ||
         !req.body.EmailAddress ||
-        !req.body.PasswordHASH ||
-        !req.body.DisplayName 
+        !req.body.PasswordHASH
     ){
-        
+       
         var errors = "";
         switch(bodycontent) 
         {
@@ -23,26 +23,23 @@ async (req,res) => {
             case !req.body.PasswordHASH:
                 errors+="Password, "
                 break;
-            case !req.body.DisplayName:
-                errors+="DisplayName, "
-                break;
             default:
                 break;
         }
         return res.status(400).send({error:`Missing some parameter: ${errors}`})
     }
-    const newUser = {
+    const newClient = {
         UserID: UUID.v7(),
         FullName: req.body.FullName,
         EmailAddress: req.body.EmailAddress,
-        PasswordHASH: gimmePassword(req.body.PasswordHASH),
+        PasswordHASH: (await Utilities.gimmePassword(req.body.PasswordHASH)).toString(),
         DisplayName: req.body.DisplayName
     }
     
         if(req.body.PhoneNumber2FA != null){
-        newUser.PhoneNumber2FA = gimmePassword(req.body.PhoneNumber2FA);}
+        newClient.PhoneNumber2FA = gimmePassword(req.body.PhoneNumber2FA).toString();}
     
-    const resultingUser = await db.users.create(newUser);
+    const resultingClient = await db.users.create(newClient);
     return res
-    .location(`${Utilities.getBaseURL(req)}/users/${resultingUser.UserID}`).sendStatus(201);
+    .location(`${Utilities.getBaseURL(req)}/client/${resultingClient.clientID}`).sendStatus(201);
 }

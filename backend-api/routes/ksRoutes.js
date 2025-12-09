@@ -1,4 +1,5 @@
 const VaccinationController = require("../controllers/VaccinationController")
+const ClientController = require("../controllers/ClientControllers")
 
 module.exports = (app) => {
     app.route("/vaccinations")
@@ -8,4 +9,7 @@ module.exports = (app) => {
     .get(VaccinationController.getByID)
     .delete(VaccinationController.deleteById)
     .put(VaccinationController.modifyById)
+
+    app.route("/client")
+    .post(ClientController.create)
 }
