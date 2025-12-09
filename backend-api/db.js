@@ -35,6 +35,13 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.vaccination = require("./models/Vaccination.js")(sequelize, DataTypes);
+db.client = require("./models.Client.js")(sequelize, DataTypes);
+db.appointment = require("./models.Appointment.js")(sequelize, DataTypes, db.vaccination, db.client);
+
+db.appointment.hasMany(db.client)
+db.client.hasMany(db.appointment)
+db.appointment.hasMany(db.vaccination)
+db.vaccination.hasMany(db.appointment)
 
 db.sync = async () => {
     await sequelize.sync({ alter: true });
