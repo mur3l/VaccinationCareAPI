@@ -49,5 +49,22 @@ exports.create = async (req, res) => {
     const appointment = await getAppointment(req, res);
     if (!appointment) return;
     res.status(200).json(appointment);
+    };
+
+    exports.getAll = async (req, res) => {
+    try {
+        const appointments = await db.appointments.findAll();
+        res.status(200).json(
+            appointments.map(a => ({
+                AppointmentID: a.AppointmentID,
+                ClientID: a.ClientID,
+                ClinicID: a.ClinicID,
+                Date: a.Date
+            }))
+        );
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
+
 
