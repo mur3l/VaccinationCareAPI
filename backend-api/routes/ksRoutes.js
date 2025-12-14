@@ -12,4 +12,13 @@ module.exports = (app) => {
 
     app.route("/client")
     .post(ClientController.create)
+
+    app.route("/appointments")
+        .get(AppointmentController.getAll)
+        .post(AppointmentController.create);
+
+    app.route("/appointments/:AppointmentID")
+        .get(AppointmentController.getById)
+        .put(AppointmentController.modifyById)
+        .delete(AppointmentController.deleteById);
 }
