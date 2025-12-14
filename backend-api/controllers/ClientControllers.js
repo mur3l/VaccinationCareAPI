@@ -86,3 +86,15 @@ exports.modifyById = async (req, res) => {
         client
     });
 };
+
+exports.deleteById = async (req, res) => {
+    const client = await db.clients.findByPk(req.params.ClientID);
+
+    if (!client) {
+        return res.status(404).send({ error: "Client not found" });
+    }
+
+    await client.destroy();
+
+    return res.status(204).send();
+};
