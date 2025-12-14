@@ -65,6 +65,14 @@ exports.create = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+    };
+
+    exports.deleteById = async (req, res) => {
+    const appointment = await getAppointment(req, res);
+    if (!appointment) return;
+
+    await appointment.destroy();
+    res.status(204).send();
 };
 
 
