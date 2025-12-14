@@ -20,6 +20,17 @@ module.exports = (sequelize, DataTypes) => {
         PhoneNumber2FA: {
             type: DataTypes.STRING,
             allowNull: true
+        },
+        VaccineID: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        AppointmentsID: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
+    }, {
+        tableName: "clients",
+        timestamps: false
     });
 };

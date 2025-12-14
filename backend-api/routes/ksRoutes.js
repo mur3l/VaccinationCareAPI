@@ -11,4 +11,5 @@ module.exports = (app) => {
     
     app.route("/client")
     .post(ClientController.create)
+    .get(ClientController.getAll)
 }
