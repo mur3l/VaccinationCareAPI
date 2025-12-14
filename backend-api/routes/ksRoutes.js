@@ -14,4 +14,6 @@ module.exports = (app) => {
     .get(ClientController.getAll)
     .put(ClientController.modifyById)
     .delete(ClientController.deleteById)
+    app.route("/client/:ClientID")
+    .get(ClientController.getById);
 }

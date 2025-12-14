@@ -98,3 +98,26 @@ exports.deleteById = async (req, res) => {
 
     return res.status(204).send();
 };
+
+exports.getById = async (req, res) => {
+    const clientId = req.params.ClientID;
+    
+    if (isNaN(clientId)) {
+        return res.status(400).send({ error: "Invalid Client ID" });
+    }
+
+    try {
+        const client = await db.clients.findByPk(clientId);
+
+        if (!client) {
+            return res.status(404).send({ error: "Client not found" });
+        }
+
+        // 200 – klient leitud
+        return res.status(200).json(client);
+
+    } catch (error) {
+        // 500 – serveri viga
+        return res.status(500).send({ error: "Server error" });
+    }
+};
