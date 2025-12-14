@@ -59,3 +59,30 @@ exports.getAll = async (req, res) => {
         res.status(500).send({ error: err.message });
     }
 };
+
+exports.modifyById = async (req, res) => {
+    const { FullName, EmailAddress, PasswordHASH, DisplayName, PhoneNumber2FA } = req.body;
+
+    if (!FullName && !EmailAddress && !PasswordHASH && !PhoneNumber2FA) {
+        return res.status(400).send({ error: "Missing required parameters" });
+    }
+
+    const client = await db.clients.findByPk(req.params.ClientID);
+
+    if (!client) {
+        return res.status(404).send({ error: "Client not found" });
+    }
+
+    const updates = {};
+    if (FullName) updates.FullName = FullName;
+    if (EmailAddress) updates.EmailAddress = EmailAddress;
+    if (PasswordHASH) updates.PasswordHASH = await Utilities.gimmePassword(PasswordHASH);
+    if (PhoneNumber2FA) updates.PhoneNumber2FA = await Utilities.gimmePassword(PhoneNumber2FA);
+
+    await client.update(updates);
+
+    return res.status(201).json({
+        message: "Client updated successfully",
+        client
+    });
+};
