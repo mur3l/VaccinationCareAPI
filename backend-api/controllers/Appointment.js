@@ -43,5 +43,11 @@ exports.create = async (req, res) => {
     await appointment.save();
 
     res.status(201).json(appointment);
+    };
+
+    exports.getById = async (req, res) => {
+    const appointment = await getAppointment(req, res);
+    if (!appointment) return;
+    res.status(200).json(appointment);
 };
 
