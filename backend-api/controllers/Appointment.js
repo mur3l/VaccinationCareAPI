@@ -22,4 +22,26 @@ exports.create = async (req, res) => {
         .location(`${Utilities.getBaseURL(req)}/appointments/${newAppointment.AppointmentID}`)
         .status(201)
         .json(newAppointment);
+    };
+
+    exports.modifyById = async (req, res) => {
+    const appointment = await getAppointment(req, res);
+    if (!appointment) return;
+
+    const { ClientID, ClinicID, Date } = req.body;
+
+    if (!ClientID || !ClinicID || !Date) {
+        return res.status(400).send({
+            error: "Missing required parameters."
+        });
+    }
+
+    appointment.ClientID = ClientID;
+    appointment.ClinicID = ClinicID;
+    appointment.Date = Date;
+
+    await appointment.save();
+
+    res.status(201).json(appointment);
 };
+
