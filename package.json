@@ -20,5 +20,6 @@
   "homepage": "https://github.com/mur3l/VaccinationCareAPI#readme",
   "dependencies": {
     "concurrently": "^9.2.1"
-  }
+  },
+  "devDependencies": {}
 }

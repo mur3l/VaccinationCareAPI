@@ -4,13 +4,13 @@ const UUID = require('uuid')
 
 exports.create =
 async (req,res) => {
+    const { FullName, EmailAddress, PasswordHASH, PhoneNumber2FA } = req.body;
     if (
         !req.body.FullName ||
         !req.body.EmailAddress ||
-        !req.body.PasswordHASH ||
-        !req.body.DisplayName 
+        !req.body.PasswordHASH
     ){
-        
+       
         var errors = "";
         switch(bodycontent) 
         {
