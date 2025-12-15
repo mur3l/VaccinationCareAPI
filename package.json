@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "starts": "concurrently \"cd backend-api && nodemon ."
+    "start": "concurrently \"cd backend-api && nodemon .\" \"cd frontend-site\\vaccinationcare-frontend && npm run serve\""
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,5 @@
   "homepage": "https://github.com/mur3l/VaccinationCareAPI#readme",
   "dependencies": {
     "concurrently": "^9.2.1"
-  },
-  "devDependencies": {}
+  }
 }
