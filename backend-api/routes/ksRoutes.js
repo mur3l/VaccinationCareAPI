@@ -9,6 +9,14 @@ module.exports = (app) => {
     .get(VaccinationController.getByID)
     .delete(VaccinationController.deleteById)
     .put(VaccinationController.modifyById)
+    
+    app.route("/client")
+    .post(ClientController.create)
+    .get(ClientController.getAll)
+    .put(ClientController.modifyById)
+    .delete(ClientController.deleteById)
+    app.route("/client/:ClientID")
+    .get(ClientController.getById);
 
     app.route("/client")
     .post(ClientController.create)
