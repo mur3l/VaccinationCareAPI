@@ -15,7 +15,12 @@
         </tr>
         <tr v-for="item in items" :key="item.VaccineID">
             <td>{{ item.VaccineID }}</td>
-            <td>{{ item.Name }}</td>
+            <td>
+                <a @click="$emit('vaccine', item)" value={{item.VaccineID}}>
+                    {{ item.Name }}
+                </a>
+
+            </td>
         </tr>
     </table>
 </template>
