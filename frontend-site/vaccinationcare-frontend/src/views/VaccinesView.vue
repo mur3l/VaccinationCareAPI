@@ -1,5 +1,5 @@
 <script>
-    import VaccinesTable from '../components/VaccinesTable.vue'
+    import VaccinesTable from '../components/VaccineTable.vue'
     export default {
         components: {
             VaccinesTable
