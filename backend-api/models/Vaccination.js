@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false
             },
             Appointment: {
-                type: DataTypes.STRING,
+                type: DataTypes.DATE,
                 allowNull: false
             },
             Location: {
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false
             },
             BestBefore: {
-                type: DataTypes.STRING,
+                type: DataTypes.INTEGER,
                 allowNull: false
             }
         },
