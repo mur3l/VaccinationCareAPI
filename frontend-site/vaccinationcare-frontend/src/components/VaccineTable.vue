@@ -3,6 +3,11 @@
         name: "VaccinesTable",
         props: {
             items: Array
+        },
+        methods {
+            function deleteMovie () {
+                this.result = await (await fetch(`http://localhost:8080/vaccination/${this.VaccineID}`, {method: 'DELETE'}))
+            }
         }
     }
 </script>
@@ -22,6 +27,11 @@
                     <td><router-link :to="{name:'vaccine', params: {seekID: item.VaccineID}}">
                         <button @click="navigate">ä</button>
                     </router-link>
+                    </td>
+                    <td>
+                        <router-link :to="{name:'vaccine'}">
+                            <button @click="deleteVaccine(item.VaccineID)"></button>
+                        </router-link>
                     </td>
                 </tr>
             </tbody>
