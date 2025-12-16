@@ -43,3 +43,8 @@ async (req,res) => {
     return res
     .location(`${Utilities.getBaseURL(req)}/client/${resultingClient.clientID}`).sendStatus(201);
 }
+
+exports.getAllCLient = async (req, res) => {
+    const client = await db.client.findAll();
+    res.status(200).send(client.map(({ClientID, Name, isAdmin}) => {return{ClientID, Name, IsAdmin}}))
+}

@@ -2,12 +2,12 @@ module.exports = (sequelize, DataTypes) => {
   const Client = sequelize.define(
     "Client",
     {
-      id: {
+      ClientId: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
-      name: {
+      Name: {
         type: DataTypes.STRING,
         allowNull: false,
       },
