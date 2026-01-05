@@ -136,6 +136,30 @@ paths:
                 in: path
                 required: true
                 type: string
+    /client:
+        post:
+            responses:
+                '201':
+                    description: Send 201 when user is successfully added to the database.
+                    schema:
+                        $ref: '#/definitions/new-Client'
+                    examples:
+                        application/json:
+                            -
+                                FullName: s
+                                EmailAddress: cmtocwk
+                                PasswordHASH: f5d
+                                PhoneNumber2FA: 3t
+                '400':
+                    description: 'Send 400, when request  body is missing some parameters.'
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: y46k
+            summary: Add a new Client to the app
+            description: Enables client signup functions and further usage
 definitions:
     new-Vaccine:
         title: Root Type for new-Vaccine
@@ -186,3 +210,21 @@ definitions:
                 type: string
         example:
             VaccineID: 84c0f85e-dd2e-4b55-8945-a903b1b67811
+    new-Client:
+        title: Root Type for new-Client
+        description: 'New user data, PhoneNumber2FA is optional'
+        type: object
+        properties:
+            FullName:
+                type: string
+            EmailAddress:
+                type: string
+            PasswordHASH:
+                type: string
+            PhoneNumber2FA:
+                type: string
+        example:
+            FullName: MyName LastName
+            EmailAddress: a@b.com
+            PasswordHASH: abc123
+            PhoneNumber2FA: 372 1234567
