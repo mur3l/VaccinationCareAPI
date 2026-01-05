@@ -2,10 +2,10 @@ const VaccinationController = require("../controllers/VaccinationController")
 const ClientController = require("../controllers/ClientControllers")
 
 module.exports = (app) => {
-    app.route("/vaccinations")
+    app.route("/vaccination")
     .get(VaccinationController.getAll)
     .post(VaccinationController.create)
-     app.route("/vaccinations/:VaccineID")
+     app.route("/vaccination/:VaccineID")
     .get(VaccinationController.getByID)
     .delete(VaccinationController.deleteById)
     .put(VaccinationController.modifyById)

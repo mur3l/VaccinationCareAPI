@@ -44,8 +44,9 @@ db.appointment.hasMany(db.vaccination)
 db.vaccination.hasMany(db.appointment)
 
 //15.12 Tunnis
-db.vaccination.belongsToMany(db.users, {through: db.orders, as: "OrderedVaccine"})
-db.users.belongsToMany(db.vaccination, {through: db.orders})
+db.vaccination.belongsToMany(db.client, {through: db.appointment, as: "AppointmentsVaccination"})
+db.client.belongsToMany(db.vaccination, {through: db.appointment})
+
 
 db.sync = async () => {
     await sequelize.sync({ alter: true });
@@ -53,4 +54,3 @@ db.sync = async () => {
 };
 
 module.exports = db;
-

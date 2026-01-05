@@ -19,7 +19,7 @@ const routes = [
     component: () => import("../views/VaccinesView.vue")
   },
   {
-    path: '/vaccinetions/:itemID',
+    path: '/vaccinetions/:VaccineID',
     name: 'vaccine',
     component: () => import('../views/SingleVaccineView.vue'),
     props: route => {return {seekID: String(route.params.VaccineID)}}

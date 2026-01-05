@@ -4,8 +4,8 @@
         props: {
             items: Array
         },
-        methods {
-            function deleteMovie () {
+        methods: {
+            async deleteVaccine (vaccineID) {
                 this.result = await (await fetch(`http://localhost:8080/vaccination/${this.VaccineID}`, {method: 'DELETE'}))
             }
         }

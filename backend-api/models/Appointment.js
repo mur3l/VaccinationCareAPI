@@ -1,5 +1,5 @@
-const { DataTypes } = require("sequelize");
-const { sequelize } = require("../db");
+// const { DataTypes } = require("sequelize");
+// const { sequelize } = require("../db");
 
 module.exports = (sequelize, DataTypes) => {
     const Appointment = sequelize.define(
