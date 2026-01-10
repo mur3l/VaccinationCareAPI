@@ -7,7 +7,11 @@
         methods: {
             async deleteVaccine (vaccineID) {
                 this.result = await (await fetch(`http://localhost:8080/vaccination/${this.VaccineID}`, {method: 'DELETE'}))
-            }
+            },
+                modifyVaccine(vaccineID) {
+            this.$router.push({ name: 'modifyVaccine', params: { seekID: vaccineID } });
+        }
+
         }
     }
 </script>
@@ -32,6 +36,9 @@
                         <router-link :to="{name:'vaccine'}">
                             <button @click="deleteVaccine(item.VaccineID)"></button>
                         </router-link>
+                    </td>
+                    <td>
+                        <button @click="modifyVaccine(item.VaccineID)">Modify</button>
                     </td>
                 </tr>
             </tbody>
