@@ -1,8 +1,17 @@
 <script>
+import VaccineDetailsTable from './VaccineDetailsTable.vue';
+
     export default {
         name: "VaccinesTable",
+        components: { VaccineDetailsTable },
         props: {
             items: Array
+        },
+        data() {
+            return {
+            selectedVaccine: null,
+            showDetails: false
+            }
         },
         methods: {
             async deleteVaccine(vaccineID) {
@@ -38,6 +47,11 @@
             </tr>
         </tbody>
     </table>
+
+    <div v-if="showDetails" class="details-modal">
+      <button class="close-btn" @click="closeDetails">Close</button>
+      <VaccineDetailsTable :item="selectedVaccine"/>
+    </div>
 </template>
 
 <style scoped>
@@ -69,6 +83,30 @@
   cursor: pointer;
   color: #fff;
   font-weight: bold;
+}
+
+.action-btn.details {
+  background-color: #007bff;
+}
+
+.action-btn.update {
+  background-color: #28a745;
+}
+
+.action-btn.delete {
+  background-color: #dc3545;
+}
+
+.action-btn:hover {
+  opacity: 0.85;
+}
+
+.details-modal {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #FFD700;
+  background-color: #000;
+  color: #FFD700;
 }
 </style>
 
