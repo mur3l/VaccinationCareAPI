@@ -4,13 +4,6 @@ import VaccineDetailsTable from "../components/VaccineDetailsTable.vue";
 export default {
   name: "SingleVaccineView",
 
-  props: {
-    seekID: {
-      type: String,
-      required: true,
-    },
-  },
-
   data() {
     return {
       thisVaccine: {
@@ -26,13 +19,20 @@ export default {
   },
 
   async created() {
-    const response = await fetch(
-      `http://localhost:8080/vaccination/${this.seekID}`
-    );
+    const id = this.$route.params.id; // must match your router path /vaccination/:id
+    if (!id) throw new Error("Missing route param: id");
+
+    const response = await fetch(`http://localhost:8080/vaccination/${id}`);
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`HTTP ${response.status}: ${text.slice(0, 120)}`);
+    }
+
     this.thisVaccine = await response.json();
   },
 };
 </script>
+
 
 <template>
   <table class="table table-striped">

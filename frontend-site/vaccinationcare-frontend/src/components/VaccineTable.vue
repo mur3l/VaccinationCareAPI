@@ -1,112 +1,107 @@
 <script>
-import VaccineDetailsTable from './VaccineDetailsTable.vue';
+export default {
+  name: "VaccinesTable",
+  props: {
+    items: { type: Array, default: () => [] }
+  },
+  emits: ["deleted"],
+  methods: {
+    async deleteVaccine(vaccineID) {
+      const res = await fetch(`http://localhost:8080/vaccination/${vaccineID}`, {
+        method: "DELETE",
+      });
 
-    export default {
-        name: "VaccinesTable",
-        components: { VaccineDetailsTable },
-        props: {
-            items: Array
-        },
-        data() {
-            return {
-            selectedVaccine: null,
-            showDetails: false
-            }
-        },
-        methods: {
-            async deleteVaccine(vaccineID) {
-                await fetch(`http://localhost:8080/vaccination/${vaccineID}`, { method: 'DELETE' });
-            },
-            modifyVaccine(vaccineID) {
-                this.$router.push({ name: 'modifyVaccine', params: { seekID: vaccineID } });
-            }
-        }
-    }
+      if (!res.ok) {
+        console.error("Delete failed:", res.status);
+        return;
+      }
+
+      // Tell parent to remove the item from the table
+      this.$emit("deleted", vaccineID);
+    },
+
+    updateVaccine(vaccineID) {
+      // Route should be /vaccination/:VaccineID/edit (see router section below)
+      this.$router.push({ name: "modifyVaccine", params: { VaccineID: vaccineID } });
+    },
+  },
+};
 </script>
 
-<template>
-    <table class="tabel table-striped">
-        <thead>
-            <tr>
-                <th>Vaccine ID</th>
-                <th>Vaccine Name</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="item in items" :key="item.VaccineID">
-                <td>{{ item.VaccineID }}</td>
-                <td>{{item.Name}}</td>
-                <td class="actions">
-                    <router-link :to="{ name: 'vaccine', params: { VaccineID: item.VaccineID } }">
-                    <button class="action-btn details">View</button>
-                    </router-link>
-                    <button @click="deleteVaccine(item.VaccineID)" class="action-btn">Delete</button>
-                    <button @click="modifyVaccine(item.VaccineID)" class="action-btn">Modify</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
 
-    <div v-if="showDetails" class="details-modal">
-      <button class="close-btn" @click="closeDetails">Close</button>
-      <VaccineDetailsTable :item="selectedVaccine"/>
-    </div>
+<template>
+  <table class="tabel">
+    <thead>
+      <tr>
+        <th>Vaccine ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Clinic</th>
+        <th>Appointment</th>
+        <th>Location</th>
+        <th>BB</th>
+        <th class="action-col">Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr v-for="item in items" :key="item.VaccineID">
+        <td>{{ item.VaccineID }}</td>
+        <td>{{ item.Name }}</td>
+        <td>{{ item.Description }}</td>
+        <td>{{ item.Clinic }}</td>
+        <td>{{ item.Appointment }}</td>
+        <td>{{ item.Location }}</td>
+        <td>{{ item.BestBefore }}</td>
+
+        <td class="actions">
+          <button class="action-btn update" @click="updateVaccine(item.VaccineID)">
+            Update
+          </button>
+          <button class="action-btn delete" @click="deleteVaccine(item.VaccineID)">
+            Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </template>
+
 
 <style scoped>
 .tabel {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 14px; /* gives “boxed” spacing look like your mock */
 }
 
 .tabel th, .tabel td {
-  border: 1px solid #FFD700;
-  padding: 10px;
-  text-align: left;
-  vertical-align: middle;
+  border: 1px solid #fff;
+  padding: 18px;
+  text-align: center;
+  background: #000;
+  color: #fff;
 }
 
-.tabel th {
-  background-color: #000000;
-  color: #FFD700;
-}
+.action-col { min-width: 220px; }
+
 .actions {
-    display: flex;
-    gap: 5px; 
+  display: flex;
+  justify-content: center;
+  gap: 18px;
 }
 
 .action-btn {
-  padding: 5px 10px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
+  padding: 12px 22px;
+  border: 1px solid #fff;
+  background: transparent;
   color: #fff;
-  font-weight: bold;
+  cursor: pointer;
+  font-weight: 600;
 }
 
-.action-btn.details {
-  background-color: #007bff;
-}
-
-.action-btn.update {
-  background-color: #28a745;
-}
-
-.action-btn.delete {
-  background-color: #dc3545;
-}
-
-.action-btn:hover {
+.action-btn.update:hover,
+.action-btn.delete:hover {
   opacity: 0.85;
 }
-
-.details-modal {
-  margin-top: 20px;
-  padding: 10px;
-  border: 1px solid #FFD700;
-  background-color: #000;
-  color: #FFD700;
-}
 </style>
-

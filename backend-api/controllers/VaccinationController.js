@@ -1,109 +1,103 @@
 const db = require("../db");
-const Utilities = require("./Utilities")
-const UUID = require("uuid")
+const Utilities = require("./Utilities");
+const UUID = require("uuid");
 
 exports.getAll = async (req, res) => {
-    try {
-        const vaccinations = await db.vaccination.findAll();
-
-        res.status(200).json(
-            vaccinations.map(v => ({
-                VaccineID: v.VaccineID,
-                Name: v.Name,
-                Description: v.Description
-            }))
-        );
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
+  try {
+    const vaccinations = await db.vaccination.findAll();
+    return res.status(200).json(vaccinations);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message });
+  }
 };
 
 exports.getByID = async (req, res) => {
-    const vaccination = await getVaccination(req, res);
-    if (!vaccination) {return res.status(404).send({error: 'Vaccination not found.'})}
-}
+  const vaccination = await getVaccination(req, res);
+  if (!vaccination) return;
+  return res.status(200).json(vaccination);
+};
 
-exports.create = 
-async (req,res) => {
-    if (
-        !req.body.Name ||
-        !req.body.Description ||
-        !req.body.Clinic ||
-        !req.body.Appointment ||
-        !req.body.Location ||
-        !req.body.BestBefore
-    ){
-        return res.status(400).send({error: 'Missing some parameter, please review your request data.'})
+exports.create = async (req, res) => {
+  const required = ["Name", "Description", "Clinic", "Appointment", "Location", "BestBefore"];
+  for (const k of required) {
+    if (!req.body[k]) {
+      return res.status(400).json({ error: `Missing parameter: ${k}` });
     }
+  }
 
-    const newVaccine = {
-        VaccineID: UUID.v7(),
-        Name: req.body.Name,
-        Description: req.body.Description,
-        Clinic: req.body.Clinic,
-        Appointment: req.body.Appointment,
-        Location: req.body.Location,
-        BestBefore: req.body.BestBefore
+  const newVaccine = {
+    VaccineID: UUID.v7(),
+    Name: req.body.Name,
+    Description: req.body.Description,
+    Clinic: req.body.Clinic,
+    Appointment: req.body.Appointment,
+    Location: req.body.Location,
+    BestBefore: req.body.BestBefore,
+  };
+
+  const createdVaccine = await db.vaccination.create(newVaccine);
+
+  return res
+    .location(`${Utilities.getBaseURL(req)}/vaccination/${createdVaccine.VaccineID}`)
+    .status(201)
+    .json(createdVaccine);
+};
+
+exports.deleteById = async (req, res) => {
+  const vaccineToBeDeleted = await getVaccination(req, res);
+  if (!vaccineToBeDeleted) return;
+
+  await vaccineToBeDeleted.destroy();
+  return res.sendStatus(204);
+};
+
+exports.modifyById = async (req, res) => {
+  const vaccineToBeChanged = await getVaccination(req, res);
+  if (!vaccineToBeChanged) return;
+
+  const required = ["Name", "Description", "Clinic", "Appointment", "Location", "BestBefore"];
+  for (const k of required) {
+    if (!req.body[k]) {
+      return res.status(400).json({ error: `Missing parameter: ${k}` });
     }
+  }
 
-    const createdVaccine = await db.vaccination.create(newVaccine);
-    return res
-    .location(`${Utilities.getBaseURL(req)}/vaccination/${createdVaccine.VaccineID}`).sendStatus(201);
-}
+  vaccineToBeChanged.Name = req.body.Name;
+  vaccineToBeChanged.Description = req.body.Description;
+  vaccineToBeChanged.Clinic = req.body.Clinic;
+  vaccineToBeChanged.Appointment = req.body.Appointment;
+  vaccineToBeChanged.Location = req.body.Location;
+  vaccineToBeChanged.BestBefore = req.body.BestBefore;
 
-exports.deleteById = 
-async (req, res) => {
-    const vaccineToBeDeleted = await getVaccination(req,res);
-    if (!vaccineToBeDeleted) 
-        {
-            return;
-        }
-    await vaccineToBeDeleted.destroy();
-    res.status(204).send({error: "No Content"})
-}
+  await vaccineToBeChanged.save();
 
-exports.modifyById = 
-async (req, res) => {
-    const vaccineToBeChanged = await getVaccination(req, res);
-    if (!vaccineToBeChanged) {
-        return;
-    }
-
-    if (
-        !req.body.Name ||
-        !req.body.Description ||
-        !req.body.Clinic ||
-        !req.body.Appointment ||
-        !req.body.Location ||
-        !req.body.BestBefore
-    ){
-        return res.status(400).send({error: 'Missing some parameter, please review your request data.'})
-    }
-
-    vaccineToBeChanged.Name = req.body.Name;
-    vaccineToBeChanged.Description = req.body.Description;
-    vaccineToBeChanged.Clinic = req.body.Clinic;
-    vaccineToBeChanged.Appointment = req.body.Appointment;
-    vaccineToBeChanged.Location = req.body.Location;
-    vaccineToBeChanged.BestBefore = req.body.BestBefore;
-    await vaccineToBeChanged.save();
-    
-    return res
-    .location(`${Utilities.getBaseURL(req)}/vaccination/${vaccineToBeChanged.VaccineID}`).sendStatus(201)
-    .send(vaccineToBeChanged);
-}
+  return res
+    .location(`${Utilities.getBaseURL(req)}/vaccination/${vaccineToBeChanged.VaccineID}`)
+    .status(200)
+    .json(vaccineToBeChanged);
+};
 
 const getVaccination = async (req, res) => {
-    const idNumber =req.params.VaccineID;
-    if(!id) {
-        res.status(400).send({error:`Entered ID is not valid ${idNumber}`})
-        return null;
-    }
-    const vaccination = await db.vaccinations.findByPk(idNumber);
-    if(!vaccination) {
-        res.status(404).send({Error: `Vaccine with this ID was not found ${idNumber}.`})
-        return null;
-    }
-    return vaccination;
-} 
+  const id = req.params.VaccineID;
+
+  if (!id || typeof id !== "string") {
+    res.status(400).json({ error: `Missing/invalid VaccineID: ${id}` });
+    return null;
+  }
+
+  let vaccination;
+  try {
+    vaccination = await db.vaccination.findByPk(id);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+    return null;
+  }
+
+  if (!vaccination) {
+    res.status(404).json({ error: `Vaccine not found: ${id}` });
+    return null;
+  }
+
+  return vaccination;
+};
