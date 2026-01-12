@@ -18,7 +18,8 @@
     "url": "https://github.com/mur3l/VaccinationCareAPI/issues"
   },
   "homepage": "https://github.com/mur3l/VaccinationCareAPI#readme",
-  "dependencies": {
-    "concurrently": "^9.2.1"
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.11"
   }
 }
