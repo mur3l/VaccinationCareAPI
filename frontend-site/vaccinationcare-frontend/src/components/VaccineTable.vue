@@ -38,7 +38,7 @@ import VaccineDetailsTable from './VaccineDetailsTable.vue';
                 <td>{{ item.VaccineID }}</td>
                 <td>{{item.Name}}</td>
                 <td class="actions">
-                    <router-link :to="{ name: 'vaccine', params: { seekID: item.VaccineID } }">
+                    <router-link :to="{ name: 'vaccine', params: { VaccineID: item.VaccineID } }">
                     <button class="action-btn details">View</button>
                     </router-link>
                     <button @click="deleteVaccine(item.VaccineID)" class="action-btn">Delete</button>

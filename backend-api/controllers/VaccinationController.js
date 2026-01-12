@@ -49,7 +49,7 @@ async (req,res) => {
 
     const createdVaccine = await db.vaccination.create(newVaccine);
     return res
-    .location(`${Utilities.getBaseURL(req)}/vaccinations/${createdVaccine.VaccineID}`).sendStatus(201);
+    .location(`${Utilities.getBaseURL(req)}/vaccination/${createdVaccine.VaccineID}`).sendStatus(201);
 }
 
 exports.deleteById = 
@@ -66,7 +66,7 @@ async (req, res) => {
 exports.modifyById = 
 async (req, res) => {
     const vaccineToBeChanged = await getVaccination(req, res);
-    if (vaccineToBeChanged) {
+    if (!vaccineToBeChanged) {
         return;
     }
 
@@ -88,14 +88,15 @@ async (req, res) => {
     vaccineToBeChanged.Location = req.body.Location;
     vaccineToBeChanged.BestBefore = req.body.BestBefore;
     await vaccineToBeChanged.save();
+    
     return res
-    .location(`${Utilities.getBaseURL(req)}/vaccinations/${vaccineToBeChanged.VaccineID}`).sendStatus(201)
+    .location(`${Utilities.getBaseURL(req)}/vaccination/${vaccineToBeChanged.VaccineID}`).sendStatus(201)
     .send(vaccineToBeChanged);
 }
 
 const getVaccination = async (req, res) => {
     const idNumber =req.params.VaccineID;
-    if(isNaN(idNumber)) {
+    if(!id) {
         res.status(400).send({error:`Entered ID is not valid ${idNumber}`})
         return null;
     }

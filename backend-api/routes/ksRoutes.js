@@ -1,5 +1,6 @@
 const VaccinationController = require("../controllers/VaccinationController")
 const ClientController = require("../controllers/ClientControllers")
+const AppointmentController = require("../controllers/AppointmentController")
 
 module.exports = (app) => {
     app.route("/vaccination")

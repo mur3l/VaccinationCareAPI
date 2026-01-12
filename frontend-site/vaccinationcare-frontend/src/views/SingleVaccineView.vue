@@ -27,7 +27,7 @@ export default {
 
   async created() {
     const response = await fetch(
-      `http://localhost:8080/vaccinations/${this.seekID}`
+      `http://localhost:8080/vaccination/${this.seekID}`
     );
     this.thisVaccine = await response.json();
   },

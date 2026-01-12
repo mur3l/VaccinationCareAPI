@@ -15,14 +15,14 @@ const routes = [
   },
   {
     path: "/vaccines",
-    name: "vaccines",
-    component: () => import("../views/VaccinesView.vue")
+    component: () => import("../views/SingleVaccineView.vue"),
+    props: route => ({ seekID: String(route.params.VaccineID) })
   },
   {
-    path: '/vaccinetions/:VaccineID',
+    path: '/vaccination/:VaccineID',
     name: 'vaccine',
     component: () => import('../views/SingleVaccineView.vue'),
-    props: route => {return {seekID: String(route.params.VaccineID)}}
+    props: route => ({ seekID: String(route.params.VaccineID) })
   }
 ]
 
