@@ -1,6 +1,11 @@
 require("dotenv").config();
 const { Sequelize, DataTypes } = require("sequelize");
 
+//13.01 Tunnis
+const session = require('express-session')
+const SequelizeStore = require('connect-session-sequelize')(session.Store)
+//
+
 const sequelize = new Sequelize(
   process.env.DB_DBNAME,
   process.env.DB_USERNAME,
@@ -21,6 +26,13 @@ const sequelize = new Sequelize(
   }
 );
 
+//13.01 Tunnis
+const sessionStore = new SequelizeStore({
+    db: sequelize,
+    tableName: "Sessions"
+})
+//
+
 async function testConnection() {
   try {
     await sequelize.authenticate();
@@ -30,6 +42,16 @@ async function testConnection() {
   }
 }
 testConnection();
+
+//13.01 Tunnis
+const sync = (async ()=> {
+  await sessionStore.sync()
+  await sequelize.sync({alter: true});
+  console.log('DB sync has been completed.');
+})
+
+
+//
 
 const db = {};
 db.Sequelize = Sequelize;
@@ -52,4 +74,5 @@ db.sync = async () => {
   console.log("DB sync has been completed");
 };
 
-module.exports = db;
+
+module.exports = {db, sync, sessionStore};
