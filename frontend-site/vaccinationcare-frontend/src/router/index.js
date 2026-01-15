@@ -1,34 +1,29 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+
 import HomeView from "../views/HomeView.vue";
+import VaccinesView from "../views/VaccinesView.vue";
+import SingleVaccineView from "../views/SingleVaccineView.vue";
+import ModifyVaccineView from "../views/ModifyVaccineView.vue";
 
 const routes = [
+  { path: "/", name: "home", component: HomeView },
+
+  { path: "/vaccines", name: "vaccines", component: VaccinesView },
+
   {
-    path: "/",
-    name: "home",
-    component: HomeView
+    path: "/vaccines/:id",
+    name: "singleVaccine",
+    component: SingleVaccineView
   },
+
   {
-    path: "/about",
-    name: "about",
-    component: () =>
-      import("../views/AboutView.vue")
-  },
-  {
-    path: "/vaccines",
-    component: () => import("../views/SingleVaccineView.vue"),
-    props: route => ({ seekID: String(route.params.VaccineID) })
-  },
-  {
-    path: '/vaccination/:VaccineID',
-    name: 'vaccine',
-    component: () => import('../views/SingleVaccineView.vue'),
-    props: route => ({ seekID: String(route.params.VaccineID) })
+    path: "/vaccines/:id/edit",
+    name: "modifyVaccine",
+    component: ModifyVaccineView
   }
-]
+];
 
-const router = createRouter({
+export default createRouter({
   history: createWebHashHistory(),
-  routes,
+  routes
 });
-
-export default router;
