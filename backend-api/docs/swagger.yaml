@@ -385,6 +385,9 @@ paths:
             summary: Delete a <Appointment> from the App
     '/auth/{LoginEmail}':
         get:
+            tags:
+                - Client
+                - Auth
             responses:
                 '200':
                     description: Returns 200 when user with email address is found
@@ -392,8 +395,23 @@ paths:
                         type: array
                         items:
                             type: string
-                '400': {}
-                '404': {}
+                '400':
+                    description: Returns bad request when parameters are missing.
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: Missing parameter for logging in
+                '404':
+                    description: Return error 404 when user not found
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: User not found
+            summary: Get a client by their Email address
         parameters:
             -
                 name: LoginEmail
