@@ -20,8 +20,13 @@ const routes = [
     path: "/vaccines/:id/edit",
     name: "modifyVaccine",
     component: ModifyVaccineView
-  }
-];
+  }],
+
+  {
+    path: '/signup',
+    name: 'signup',
+    component: () => import('../views/RegisterView.vue')
+  },
 
 export default createRouter({
   history: createWebHashHistory(),
