@@ -10,7 +10,6 @@ async function hashPassword(password) {
 }
 
 exports.create = async (req, res) => {
-    // IMPORTANT: treat this as a *plain password*
     const { FullName, EmailAddress, PasswordHASH, PhoneNumber2FA } = req.body;
 
     const missing = [];
@@ -26,14 +25,14 @@ exports.create = async (req, res) => {
 
     try {
         const newClient = {
-            ClientID: uuidv4(),                       // FIX 1
+            ClientID: uuidv4(),
             FullName,
             EmailAddress,
             PasswordHASH: await hashPassword(PasswordHASH),
             PhoneNumber2FA: PhoneNumber2FA || null
         };
 
-        const resultingClient = await db.client.create(newClient); // FIX 2
+        const resultingClient = await db.client.create(newClient);
 
         return res
             .status(201)

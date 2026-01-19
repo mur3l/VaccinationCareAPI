@@ -1,5 +1,5 @@
 const VaccinationController = require("../controllers/VaccinationController");
-const ClientController = require("../controllers/ClientControllers");
+const ClientController = require("../controllers/ClientController");
 const AppointmentController = require("../controllers/AppointmentController");
 const SessionsController = require("../controllers/SessionsController");
 
@@ -22,15 +22,13 @@ module.exports = (app) => {
     .put(AppointmentController.modifyById)
     .delete(AppointmentController.deleteById);
 
-  // Clients
   app.route("/client")
     .get(ClientController.getAllClients)
     .post(ClientController.create);
 
   app.route("/client/:ClientID")
-    .get(ClientController.getById);
+    .get(ClientController.getbyID);
 
-  // Auth helpers / sessions
   app.route("/auth/:LoginEmail")
     .get(ClientController.getByEmail);
 
