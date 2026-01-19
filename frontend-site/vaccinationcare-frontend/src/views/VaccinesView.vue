@@ -25,7 +25,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import VaccinesTable from "../../components/VaccineTable.vue";
+import VaccinesTable from "../components/VaccineTable.vue";
 
 const vaccines = ref([])
 const loading = ref(true)
