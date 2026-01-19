@@ -1,56 +1,66 @@
 const { db } = require('../db');
 const Utilities = require('./Utilities');
-const UUID = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 
 async function hashPassword(password) {
     if (!password) return null;
-    try {
-        const saltRounds = 10;
-        return await bcrypt.hash(password, saltRounds);
-    } catch (err) {
-        console.error('Error hashing password:', err);
-        throw err;
-    }
+    const saltRounds = 10;
+    return bcrypt.hash(password, saltRounds);
 }
 
 exports.create = async (req, res) => {
+    // IMPORTANT: treat this as a *plain password*
     const { FullName, EmailAddress, PasswordHASH, PhoneNumber2FA } = req.body;
-    
-    if (!FullName || !EmailAddress || !PasswordHASH) {
-        let errors = [];
-        if (!FullName) errors.push("FullName");
-        if (!EmailAddress) errors.push("EmailAddress");
-        if (!PasswordHASH) errors.push("PasswordHASH");
-        return res.status(400).send({ error: `Missing parameters: ${errors.join(', ')}` });
+
+    const missing = [];
+    if (!FullName) missing.push("FullName");
+    if (!EmailAddress) missing.push("EmailAddress");
+    if (!PasswordHASH) missing.push("PasswordHASH");
+
+    if (missing.length) {
+        return res
+            .status(400)
+            .json({ error: `Missing parameters: ${missing.join(', ')}` });
     }
-    
+
     try {
         const newClient = {
-            UserID: UUID.v7(),
-            FullName: FullName,
-            EmailAddress: EmailAddress,
-            PasswordHASH: await hashPassword(PasswordHASH)
+            ClientID: uuidv4(),                       // FIX 1
+            FullName,
+            EmailAddress,
+            PasswordHASH: await hashPassword(PasswordHASH),
+            PhoneNumber2FA: PhoneNumber2FA || null
         };
-        
-        if (PhoneNumber2FA != null && PhoneNumber2FA !== '') {
-            newClient.PhoneNumber2FA = PhoneNumber2FA;
-        }
-        
-        const resultingClient = await db.users.create(newClient);
+
+        const resultingClient = await db.client.create(newClient); // FIX 2
+
         return res
-            .location(`${Utilities.getBaseURL(req)}/client/${resultingClient.ClientID}`)
             .status(201)
-            .json({ message: 'Client created successfully', id: resultingClient.ClientID });
+            .location(`${Utilities.getBaseURL(req)}/client/${resultingClient.ClientID}`)
+            .json({
+                message: 'Client created successfully',
+                ClientID: resultingClient.ClientID
+            });
+
     } catch (error) {
         console.error('Error creating client:', error);
-        return res.status(500).send({ error: 'Internal server error' });
+
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            return res.status(409).json({
+                error: 'Client with this EmailAddress already exists'
+            });
+        }
+
+        return res.status(500).json({ error: 'Internal server error' });
     }
 };
 
-exports.getAllClients = async (req, res) => {
+exports.getAllClients = async (_req, res) => {
     try {
-        const clients = await db.users.findAll();
+        const clients = await db.client.findAll({
+            attributes: ['ClientID', 'FullName', 'EmailAddress', 'PhoneNumber2FA']
+        });
         res.json(clients);
     } catch (error) {
         console.error('Error getting clients:', error);
@@ -60,7 +70,7 @@ exports.getAllClients = async (req, res) => {
 
 exports.getbyID = async (req, res) => {
     try {
-        const client = await db.users.findByPk(req.params.ClientID);
+        const client = await db.client.findByPk(req.params.ClientID);
         if (!client) {
             return res.status(404).json({ error: 'Client not found' });
         }
@@ -73,7 +83,7 @@ exports.getbyID = async (req, res) => {
 
 exports.getByEmail = async (req, res) => {
     try {
-        const client = await db.users.findOne({
+        const client = await db.client.findOne({
             where: { EmailAddress: req.params.LoginEmail }
         });
         if (!client) {

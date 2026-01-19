@@ -13,22 +13,23 @@ const routes = [
   {
     path: "/vaccines/:id",
     name: "singleVaccine",
-    component: SingleVaccineView
+    component: SingleVaccineView,
   },
 
   {
     path: "/vaccines/:id/edit",
     name: "modifyVaccine",
-    component: ModifyVaccineView
-  }],
+    component: ModifyVaccineView,
+  },
 
   {
-    path: '/signup',
-    name: 'signup',
-    component: () => import('../views/RegisterView.vue')
+    path: "/signup",
+    name: "signup",
+    component: () => import("../views/RegisterView.vue"),
   },
+];
 
 export default createRouter({
   history: createWebHashHistory(),
-  routes
+  routes,
 });
