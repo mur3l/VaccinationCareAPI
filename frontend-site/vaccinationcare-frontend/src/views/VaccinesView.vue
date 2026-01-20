@@ -33,7 +33,7 @@ const error = ref(null)
 
 onMounted(async () => {
   try {
-    const res = await fetch('http://localhost:3000/vaccinations')
+    const res = await fetch('http://localhost:3000/vaccination')
     if (!res.ok) throw new Error('Failed to fetch')
     vaccines.value = await res.json()
   } catch (e) {
