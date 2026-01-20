@@ -1,6 +1,4 @@
 <script>
-import VaccineDetailsTable from "../components/VaccineDetailsTable.vue";
-
 export default {
   name: "SingleVaccineView",
 
@@ -19,20 +17,28 @@ export default {
   },
 
   async created() {
-    const id = this.$route.params.id; // must match your router path /vaccination/:id
-    if (!id) throw new Error("Missing route param: id");
-
-    const response = await fetch(`http://localhost:8080/vaccination/${id}`);
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`HTTP ${response.status}: ${text.slice(0, 120)}`);
+    const id = this.$route.params.id;   // 🔴 PEAB olema "id"
+    if (!id) {
+      console.error("Missing route param: id");
+      return;
     }
 
-    this.thisVaccine = await response.json();
+    const response = await fetch(`http://localhost:8080/vaccination/${id}`);
+    const data = await response.json();
+
+    // mapime backendi vastuse frontendile sobivaks
+    this.thisVaccine = {
+      VaccineID: data.id ?? data.VaccineID ?? "",
+      Name: data.name ?? "",
+      Description: data.description ?? "",
+      Clinic: data.clinic ?? "",
+      Appointment: data.appointment ?? "",
+      Location: data.location ?? "",
+      BestBefore: data.bestBefore ?? "",
+    };
   },
 };
 </script>
-
 
 <template>
   <table class="table table-striped">

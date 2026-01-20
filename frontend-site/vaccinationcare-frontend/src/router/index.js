@@ -4,9 +4,12 @@ import HomeView from "../views/HomeView.vue";
 import VaccinesView from "../views/VaccinesView.vue";
 import SingleVaccineView from "../views/SingleVaccineView.vue";
 import ModifyVaccineView from "../views/ModifyVaccineView.vue";
+import AboutView from "../views/AboutView.vue";
 
 const routes = [
   { path: "/", name: "home", component: HomeView },
+  
+  { path: "/about", name: "about", component: AboutView },
 
   { path: "/about", name: "about", component: AboutView },
 
