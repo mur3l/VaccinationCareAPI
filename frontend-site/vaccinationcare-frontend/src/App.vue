@@ -7,7 +7,9 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> |
     <router-link to="/vaccines">Vaccines</router-link> |
-    <router-link to="/signup">Registreeru</router-link>
+    <router-link to="/login">Log In</router-link> |
+    <router-link to="/signup">Registreeru</router-link> 
+    
   </nav>
   <router-view />
 </template>
