@@ -4,7 +4,7 @@ const UUID = require("uuid");
 
 const getAppointment = async (req, res) => {
     try {
-        const appointment = await db.appointments.findByPk(req.params.AppointmentID);
+        const appointment = await db.appointment.findByPk(req.params.AppointmentID);
         if (!appointment) {
             res.status(404).json({ error: 'Appointment not found' });
             return null;
@@ -24,7 +24,7 @@ exports.create = async (req, res) => {
     }
 
     try {
-        const newAppointment = await db.appointments.create({
+        const newAppointment = await db.appointment.create({
             AppointmentID: UUID.v7(),
             ClientID,
             ClinicID,
@@ -65,7 +65,7 @@ exports.getById = async (req, res) => {
 
 exports.getAll = async (req, res) => {
     try {
-        const appointments = await db.appointments.findAll();
+        const appointments = await db.appointment.findAll();
         res.status(200).json(appointments.map(a => ({
             AppointmentID: a.AppointmentID,
             ClientID: a.ClientID,
