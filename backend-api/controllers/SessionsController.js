@@ -62,13 +62,6 @@ exports.newSession = async (req, res) => {
     }
 };
 
-    return res.status(200).send({
-        ClientID : clientToProvideSessionFor.ClientID,
-        DisplayName : clientToProvideSessionFor.DisplayName,
-        EmailAddress : clientToProvideSessionFor.EmailAddress,
-        IsAdmin : clientToProvideSessionFor.IsAdmin
-    })
-}
 
 //As an app developer, I want to authenticat a valid existing Session. for any User that authenticates Branch
 exports.reauthenticate = 

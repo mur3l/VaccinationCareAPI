@@ -2,17 +2,22 @@
     export default {
         methods: {
             async signUp() {
-                console.log("button is clicked")
-                await(
-                    await fetch(`http://localhost:8080/clients/`, 
-                    {
-                        method: 'POST', 
-                        headers: {"Content-Type":"application/json"},
-                        body: JSON.stringify(this.NewUser),
-                        
-                    })
-                )
-            }
+    console.log("button is clicked")
+
+    const payload = {
+        FullName: this.NewUser.FullName,
+        EmailAddress: this.NewUser.EmailAddress,
+        PasswordHASH: this.NewUser.PlainPassword,
+        PhoneNumber2FA: this.NewUser.PlainPhoneNumber2FA
+    }
+
+    await fetch('http://localhost:8080/client', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    })
+}
+
         },
         name: "SignUpForm",
         data() {

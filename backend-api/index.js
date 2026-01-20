@@ -21,7 +21,16 @@ const {sync} = require("./db");
 //  res.send(["Terminator2", "Minions", "Devil wears a prada"])    
 //})
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:8081', 'http://localhost:8080'],
+  credentials: true
+}));
+
+app.options(/.*/, cors({
+  origin: ['http://localhost:8081', 'http://localhost:8080'],
+  credentials: true
+}));
+
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use(express.json());
 
