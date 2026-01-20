@@ -62,7 +62,17 @@ exports.newSession = async (req, res) => {
     }
 };
 
-exports.reauthenticate = async (req, res) => {
+    return res.status(200).send({
+        ClientID : clientToProvideSessionFor.ClientID,
+        DisplayName : clientToProvideSessionFor.DisplayName,
+        EmailAddress : clientToProvideSessionFor.EmailAddress,
+        IsAdmin : clientToProvideSessionFor.IsAdmin
+    })
+}
+
+//As an app developer, I want to authenticat a valid existing Session. for any User that authenticates Branch
+exports.reauthenticate = 
+  async (req, res) => {
     if (!req.session.ClientID) {
         return res.status(401).send({ error: "Session expired, please log in again." });
     }
