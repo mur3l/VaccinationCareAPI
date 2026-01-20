@@ -8,22 +8,32 @@ import ModifyVaccineView from "../views/ModifyVaccineView.vue";
 const routes = [
   { path: "/", name: "home", component: HomeView },
 
+  { path: "/about", name: "about", component: AboutView },
+
   { path: "/vaccines", name: "vaccines", component: VaccinesView },
+
+  { path: '/login', name: 'Login',component: () => import('../views/LoginView.vue')},
 
   {
     path: "/vaccines/:id",
     name: "singleVaccine",
-    component: SingleVaccineView
+    component: SingleVaccineView,
   },
 
   {
     path: "/vaccines/:id/edit",
     name: "modifyVaccine",
-    component: ModifyVaccineView
-  }
+    component: ModifyVaccineView,
+  },
+
+  {
+    path: "/signup",
+    name: "signup",
+    component: () => import("../views/RegisterView.vue"),
+  },
 ];
 
 export default createRouter({
   history: createWebHashHistory(),
-  routes
+  routes,
 });
