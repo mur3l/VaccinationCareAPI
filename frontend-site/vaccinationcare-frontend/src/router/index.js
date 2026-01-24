@@ -3,8 +3,7 @@ import LoginView from '../views/LoginView.vue'
 import VaccinesView from '../views/VaccinesView.vue'
 import HomeView from '../views/HomeView.vue'
 import AboutView from '../views/AboutView.vue'
-import RegisterView from '../views/RegisterView.vue'
-import SignUpView from '../views/LoginView.vue'
+import SignUpView from '../views/RegisterView.vue'
 
 const routes = [
   {
