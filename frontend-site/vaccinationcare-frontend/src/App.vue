@@ -9,7 +9,7 @@
       <!-- Kui välja logitud - näita Log In ja Register linke -->
       <template v-if="!isAuthenticated">
         <router-link to="/login">Log In</router-link> |
-        <router-link to="/register">Register</router-link>
+        <router-link to="/signup">Register</router-link>
       </template>
       
       <!-- Kui sisse logitud - näita Logout nuppu -->
