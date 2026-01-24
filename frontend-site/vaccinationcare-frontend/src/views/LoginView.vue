@@ -1,40 +1,39 @@
 <template>
   <div class="login-container">
     <h2>Login</h2>
-    
-    <div v-if="error" class="error-message">{{ error }}</div>
-    <div v-if="message" class="success-message">{{ message }}</div>
-    
+
+    <!-- Veateade -->
+    <div v-if="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <!-- Edukas login -->
+    <div v-if="success" class="success-message">
+      Login successful!
+    </div>
+
     <form @submit.prevent="handleLogin" class="login-form">
       <div class="form-group">
-        <label for="email">Email:</label>
-        <input 
-          id="email" 
-          v-model="form.email" 
-          type="email" 
-          required
-          :disabled="loading"
+        <label>Email</label>
+        <input
+          v-model.trim="email"
+          type="email"
           placeholder="admin@example.com"
-        />
-      </div>
-      
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input 
-          id="password" 
-          v-model="form.password" 
-          type="password" 
-          required
           :disabled="loading"
-          placeholder="••••••••"
         />
       </div>
-      
-      <button 
-        type="submit" 
-        :disabled="loading"
-        class="login-button"
-      >
+
+      <div class="form-group">
+        <label>Password</label>
+        <input
+          v-model="password"
+          type="password"
+          placeholder="••••••••"
+          :disabled="loading"
+        />
+      </div>
+
+      <button type="submit" :disabled="loading">
         {{ loading ? 'Logging in...' : 'Login' }}
       </button>
     </form>
@@ -42,43 +41,53 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 
 const router = useRouter()
 const { login } = useAuth()
 
-const form = reactive({
-  email: '',
-  password: ''
-})
-
+const email = ref('')
+const password = ref('')
 const loading = ref(false)
 const error = ref('')
-const message = ref('')
+const success = ref(false)
 
 async function handleLogin() {
-  if (!form.email || !form.password) {
-    error.value = 'Please fill in all fields'
+  error.value = ''
+  success.value = false
+
+  // 1️⃣ Frontend-validatsioon
+  if (!email.value || !password.value) {
+    error.value = 'Please fill in both email and password.'
     return
   }
-  
+
   loading.value = true
-  error.value = ''
-  message.value = ''
-  
+
   try {
-    await login(form.email, form.password)
-    message.value = 'Login successful! Redirecting...'
-    
-    // Oota natuke ja siis suuna edasi
-    setTimeout(() => {
-      router.push('/vaccines')
-    }, 1000)
-    
+    await login(email.value, password.value)
+
+    success.value = true
+    await router.push('/vaccines')
+
   } catch (err) {
-    error.value = err.message || 'Login failed. Please check your credentials.'
+        const msg = err.message?.toLowerCase() || ''
+
+        if (msg.includes('password')) {
+            error.value = 'Password is missing.'
+        } else if (msg.includes('email')) {
+            error.value = 'Email is missing.'
+        } else if (msg.includes('missing')) {
+            error.value = 'Email or password is missing.'
+        } else if (msg.includes('incorrect')) {
+            error.value = 'Incorrect password.'
+        } else if (msg.includes('not found')) {
+            error.value = 'User not found.'
+        } else {
+            error.value = 'Login failed.'
+        }
   } finally {
     loading.value = false
   }
@@ -98,47 +107,33 @@ async function handleLogin() {
   margin-bottom: 1rem;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-}
-
-.form-group input {
+input {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
 }
 
-.login-button {
+button {
   width: 100%;
   padding: 0.75rem;
-  background-color: #007bff;
+  background-color: #007bff; 
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}
-
-.login-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+  font-weight: bold;
 }
 
 .error-message {
-  color: #dc3545;
-  margin-bottom: 1rem;
+  background: #f8d7da;
+  color: #721c24;
   padding: 0.5rem;
-  background-color: #f8d7da;
-  border-radius: 4px;
+  margin-bottom: 1rem;
 }
 
 .success-message {
-  color: #28a745;
-  margin-bottom: 1rem;
+  background: #d4edda;
+  color: #155724;
   padding: 0.5rem;
-  background-color: #d4edda;
-  border-radius: 4px;
+  margin-bottom: 1rem;
 }
 </style>

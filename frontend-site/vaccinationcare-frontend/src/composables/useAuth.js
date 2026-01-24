@@ -1,91 +1,53 @@
-// src/composables/useAuth.js
-import { ref, computed } from 'vue'
-
-const user = ref(null)
-const loadingAuth = ref(false)
-
-const isLoggedIn = computed(() => !!user.value)
-
-// ⭐ OLULINE: Kuidas teie backend admini tuvastab?
-// Kontrollige, mis välja SessionsController tagastab!
-const isAdmin = computed(() => {
-  if (!user.value) return false
-  // PROOVIGE ERINEVAID:
-  return user.value.role === 'admin' || 
-         user.value.Role === 'ADMIN' || 
-         user.value.isAdmin === true ||
-         (user.value.roles && user.value.roles.includes('admin'))
-})
+import { ref } from 'vue'
 
 const API = 'http://localhost:8080'
 
-async function fetchMe() {
-  loadingAuth.value = true
-  try {
-    const res = await fetch(`${API}/sessions/me`, { 
-      credentials: 'include' 
-    })
-    if (!res.ok) {
-      user.value = null
-      return
-    }
-    user.value = await res.json()
-    console.log('User data:', user.value) // 👈 Debug jaoks!
-  } catch (error) {
-    user.value = null
-  } finally {
-    loadingAuth.value = false
-  }
-}
+// Kasuta reactive objekti globaalseks staatuseks
+const authState = ref({
+  user: null,
+  isAuthenticated: false
+})
 
-async function login(email, password) {
-  loadingAuth.value = true
-  try {
+export function useAuth() {
+  async function login(email, password) {
+    console.log('Login attempt with:', { email, password })
+    
     const res = await fetch(`${API}/sessions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ 
-        LoginEmail: email, 
-        Password: password 
+      body: JSON.stringify({
+        LoginEmail: email,
+        LoginPassword: password
       })
     })
-    
-    if (!res.ok) {
-      const error = await res.json().catch(() => ({}))
-      throw new Error(error.message || 'Login failed')
-    }
-    
-    user.value = await res.json()
-    return user.value
-  } catch (error) {
-    throw error
-  } finally {
-    loadingAuth.value = false
-  }
-}
 
-async function logout() {
-  try {
-    await fetch(`${API}/auth/logout`, { 
-      method: 'GET',
-      credentials: 'include' 
+    console.log('Response status:', res.status)
+    console.log('Response ok:', res.ok)
+    
+    const data = await res.json().catch((err) => {
+      console.error('JSON parse error:', err)
+      return {}
     })
-  } catch (error) {
-    console.error('Logout error:', error)
-  } finally {
-    user.value = null
-  }
-}
 
-export function useAuth() {
+    console.log('Response data:', data)
+
+    if (!res.ok) {
+      const error = new Error(data.error || 'Login failed')
+      error.code = data.code
+      error.status = res.status
+      throw error
+    }
+
+    authState.value.user = data
+    authState.value.isAuthenticated = true
+    console.log('Auth state updated:', authState.value)
+    return data
+  }
+
   return { 
-    user, 
-    isLoggedIn, 
-    isAdmin, 
-    loadingAuth, 
-    fetchMe, 
-    login, 
-    logout 
+    user: authState.value.user,
+    isAuthenticated: authState.value.isAuthenticated,
+    login 
   }
 }

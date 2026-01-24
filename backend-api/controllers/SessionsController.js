@@ -2,66 +2,53 @@ const { db } = require("../db");
 const Utilities = require("./Utilities");
 
 exports.newSession = async (req, res) => {
-    console.log('Session creation request body:', req.body);
+    console.log('=== NEW SESSION REQUEST ===');
+    console.log('Request body:', JSON.stringify(req.body));
+    console.log('LoginEmail:', req.body.LoginEmail);
+    console.log('LoginPassword exists:', !!req.body.LoginPassword);
+    console.log('LoginPassword length:', req.body.LoginPassword?.length);
     
     if (!req.body.LoginEmail || !req.body.LoginPassword) {
-        let missingparams = "";
-        if (!req.body.LoginEmail) {
-            missingparams += "No email provided. ";
-        }
-        if (!req.body.LoginPassword) {
-            missingparams += "No password provided.";
-        }
-        return res.status(400).send({ error: "Missing parameter for logging in: " + missingparams });
+        console.log('MISSING PARAMETERS DETECTED');
+        console.log('Has LoginEmail:', !!req.body.LoginEmail);
+        console.log('Has LoginPassword:', !!req.body.LoginPassword);
     }
     
-    const LoginEmail = req.body.LoginEmail;
-    console.log('Looking for client with email:', LoginEmail);
+    console.log('Looking for client with email:', req.body.LoginEmail);
     
     try {
-        const clientToProvideSessionFor = await db.clients.findOne({ 
-            where: { EmailAddress: LoginEmail } 
-        });
+        let clientToProvideSessionFor;
+        try {
+            clientToProvideSessionFor = await db.clients.findOne({ 
+                where: { EmailAddress: req.body.LoginEmail } 
+            });
+        } catch (dbError) {
+            console.log('db.clients failed, trying db.client');
+            clientToProvideSessionFor = await db.client.findOne({ 
+                where: { EmailAddress: req.body.LoginEmail } 
+            });
+        }
+        
+        console.log('Client found:', !!clientToProvideSessionFor);
         
         if (!clientToProvideSessionFor) {
+            console.log('CLIENT NOT FOUND IN DATABASE');
             return res.status(404).send({ error: "Client not found" });
         }
         
-        // Kasuta Utilities.letMeIn funktsiooni parooli kontrolliks
-        // Kui Utilities.letMeIn pole, siis tee lihtne versioon
-        let isCorrect = false;
-        try {
-            if (Utilities.letMeIn) {
-                isCorrect = await Utilities.letMeIn(req.body.LoginPassword, clientToProvideSessionFor.PasswordHASH);
-            } else {
-                // Lihtne versioon - võrdle otse (testimiseks)
-                const bcrypt = require('bcrypt');
-                isCorrect = await bcrypt.compare(req.body.LoginPassword, clientToProvideSessionFor.PasswordHASH);
-            }
-        } catch (err) {
-            console.error('Password check error:', err);
-            isCorrect = false;
-        }
-        
-        if (!isCorrect) {
-            return res.status(401).send({ error: "Password mismatch" });
-        }
-        
-        req.session.ClientID = clientToProvideSessionFor.ClientID;
-        
-        return res.status(200).send({
+        console.log('Client data:', {
             ClientID: clientToProvideSessionFor.ClientID,
-            DisplayName: clientToProvideSessionFor.DisplayName || clientToProvideSessionFor.FullName,
             EmailAddress: clientToProvideSessionFor.EmailAddress,
-            IsAdmin: clientToProvideSessionFor.IsAdmin || false
+            HasPasswordHash: !!clientToProvideSessionFor.PasswordHASH,
+            PasswordHashStart: clientToProvideSessionFor.PasswordHASH?.substring(0, 20)
         });
         
     } catch (error) {
         console.error('Session creation error:', error);
-        return res.status(500).send({ error: "Internal server error" });
+        console.error('Error stack:', error.stack);
+        return res.status(500).send({ error: "Internal server error", details: error.message });
     }
 };
-
 
 //As an app developer, I want to authenticat a valid existing Session. for any User that authenticates Branch
 exports.reauthenticate = 
