@@ -1,15 +1,10 @@
+<!-- LoginView.vue -->
 <template>
   <div class="login-container">
     <h2>Login</h2>
 
-    <!-- Veateade -->
     <div v-if="error" class="error-message">
       {{ error }}
-    </div>
-
-    <!-- Edukas login -->
-    <div v-if="success" class="success-message">
-      Login successful!
     </div>
 
     <form @submit.prevent="handleLogin" class="login-form">
@@ -52,13 +47,10 @@ const email = ref('')
 const password = ref('')
 const loading = ref(false)
 const error = ref('')
-const success = ref(false)
 
 async function handleLogin() {
   error.value = ''
-  success.value = false
-
-  // 1️⃣ Frontend-validatsioon
+  
   if (!email.value || !password.value) {
     error.value = 'Please fill in both email and password.'
     return
@@ -68,26 +60,24 @@ async function handleLogin() {
 
   try {
     await login(email.value, password.value)
-
-    success.value = true
+    
     await router.push('/vaccines')
-
+    
   } catch (err) {
-        const msg = err.message?.toLowerCase() || ''
+    console.error('Login error details:', err)
+    
+    const msg = err.message?.toLowerCase() || ''
+    const status = err.status
 
-        if (msg.includes('password')) {
-            error.value = 'Password is missing.'
-        } else if (msg.includes('email')) {
-            error.value = 'Email is missing.'
-        } else if (msg.includes('missing')) {
-            error.value = 'Email or password is missing.'
-        } else if (msg.includes('incorrect')) {
-            error.value = 'Incorrect password.'
-        } else if (msg.includes('not found')) {
-            error.value = 'User not found.'
-        } else {
-            error.value = 'Login failed.'
-        }
+    if (status === 401) {
+      error.value = 'Invalid email or password'
+    } else if (status === 404) {
+      error.value = 'User not found'
+    } else if (msg.includes('network') || msg.includes('fetch')) {
+      error.value = 'Network error. Please check your connection.'
+    } else {
+      error.value = err.message || 'Login failed'
+    }
   } finally {
     loading.value = false
   }
@@ -115,7 +105,7 @@ input {
 button {
   width: 100%;
   padding: 0.75rem;
-  background-color: #007bff; 
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
@@ -128,12 +118,6 @@ button {
   color: #721c24;
   padding: 0.5rem;
   margin-bottom: 1rem;
-}
-
-.success-message {
-  background: #d4edda;
-  color: #155724;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
+  border-radius: 4px;
 }
 </style>
