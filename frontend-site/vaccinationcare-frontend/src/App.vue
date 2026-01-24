@@ -1,13 +1,21 @@
-<!-- src/App.vue -->
 <template>
   <div id="app">
-    <nav v-if="!isLoginPage">
+    <!-- Navigation ALATI nähtav -->
+    <nav>
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link> |
       <router-link to="/vaccines">Vaccines</router-link> |
-      <router-link to="/login">Log In</router-link> |
-      <router-link to="/signup">Register</router-link>
-      <button @click="logout" style="float: right;">Logout</button>
+      
+      <!-- Kui välja logitud - näita Log In ja Register linke -->
+      <template v-if="!isAuthenticated">
+        <router-link to="/login">Log In</router-link> |
+        <router-link to="/register">Register</router-link>
+      </template>
+      
+      <!-- Kui sisse logitud - näita Logout nuppu -->
+      <template v-else>
+        <button @click="logout" style="float: right;">Logout</button>
+      </template>
     </nav>
     <router-view />
   </div>
