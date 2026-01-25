@@ -1,6 +1,12 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import VaccineTable from "../components/VaccineTable.vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
+
+function goAdd() {
+  router.push({ name: "addVaccine" });
+}
 
 const items = ref([]);
 const loading = ref(false);
@@ -39,6 +45,10 @@ function onDeleted(id) {
 <template>
   <div>
     <h2>Vaccines</h2>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+    <h2>Vaccines</h2>
+    <button @click="goAdd">Add</button>
+    </div>
 
     <div v-if="error" class="error">{{ error }}</div>
     <div v-else-if="loading">Loading...</div>

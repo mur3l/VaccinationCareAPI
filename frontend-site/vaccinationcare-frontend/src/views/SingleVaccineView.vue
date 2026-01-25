@@ -17,26 +17,34 @@ export default {
   },
 
   async created() {
-    const id = this.$route.params.id;   // 🔴 PEAB olema "id"
-    if (!id) {
-      console.error("Missing route param: id");
-      return;
-    }
+  const id = this.$route.params.id;
+  if (!id) {
+    console.error("Missing route param: id");
+    return;
+  }
 
-    const response = await fetch(`http://localhost:8080/vaccination/${id}`);
-    const data = await response.json();
+  const response = await fetch(`http://localhost:8080/vaccination/${id}`, {
+    credentials: "include"
+  });
 
-    // mapime backendi vastuse frontendile sobivaks
-    this.thisVaccine = {
-      VaccineID: data.id ?? data.VaccineID ?? "",
-      Name: data.name ?? "",
-      Description: data.description ?? "",
-      Clinic: data.clinic ?? "",
-      Appointment: data.appointment ?? "",
-      Location: data.location ?? "",
-      BestBefore: data.bestBefore ?? "",
-    };
-  },
+  if (!response.ok) {
+    console.error("Failed to load vaccine:", response.status);
+    return;
+  }
+
+  const data = await response.json();
+
+  this.thisVaccine = {
+    VaccineID: data.VaccineID || "",
+    Name: data.Name || "",
+    Description: data.Description || "",
+    Clinic: data.Clinic || "",
+    Appointment: data.Appointment || "",
+    Location: data.Location || "",
+    BestBefore: data.BestBefore || "",
+  };
+},
+
 };
 </script>
 
