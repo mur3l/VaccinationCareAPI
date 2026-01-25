@@ -1,57 +1,55 @@
-<!-- <script>
-    import VaccinesTable from '../components/VaccineTable.vue'
-    export default {
-        components: {
-            VaccinesTable
-        },
-        data() {
-            return{
-            allVaccines: []
-        }
-        },
-    async created() {
-    const res = await fetch("http://localhost:8080/vaccination");
-    this.allVaccines = await res.json();
-}
-
-}
-</script>
-<template>
-    <main>
-        <VaccinesTable :items="allVaccines"/>
-    </main>
-</template> -->
-
-
 <script setup>
-import { ref, onMounted } from 'vue'
-import VaccinesTable from "../components/VaccineTable.vue";
+import { ref, onMounted } from "vue";
+import VaccineTable from "../components/VaccineTable.vue";
 
-const vaccines = ref([])
-const loading = ref(true)
-const error = ref(null)
+const items = ref([]);
+const loading = ref(false);
+const error = ref("");
 
-onMounted(async () => {
+async function loadVaccines() {
+  loading.value = true;
+  error.value = "";
+
   try {
-    const res = await fetch('http://localhost:8080/vaccination')
-    if (!res.ok) throw new Error('Failed to fetch')
-    vaccines.value = await res.json()
+    const res = await fetch("http://localhost:8080/vaccination", {
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || `Failed to load: ${res.status}`);
+    }
+
+    items.value = await res.json();
   } catch (e) {
-    error.value = e.message
+    error.value = e.message || "Failed to load vaccines";
+    items.value = [];
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-})
+}
+
+onMounted(loadVaccines);
+
+function onDeleted(id) {
+  items.value = items.value.filter(v => v.VaccineID !== id);
+}
 </script>
 
 <template>
   <div>
-    <h1>Vaccines List</h1>
+    <h2>Vaccines</h2>
 
-    <div v-if="loading">Loading...</div>
-    <div v-else-if="error">{{ error }}</div>
-    <div v-else>
-      <VaccinesTable :items="vaccines" />
-    </div>
+    <div v-if="error" class="error">{{ error }}</div>
+    <div v-else-if="loading">Loading...</div>
+
+    <VaccineTable
+      :items="items"
+      @deleted="onDeleted"
+    />
   </div>
 </template>
+
+<style scoped>
+.error { color: #b00020; margin: 12px 0; }
+</style>

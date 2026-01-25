@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const API = 'http://localhost:8080'
 
@@ -34,11 +34,19 @@ export function useAuth() {
       console.log('Response data:', data)
 
       if (!res.ok) {
-        const error = new Error(data.error || 'Login failed')
-        error.code = data.code
-        error.status = res.status
-        throw error
-      }
+  const error = new Error(data.error || 'Login failed')
+  error.code = data.code
+  error.status = res.status
+  throw error
+}
+
+localStorage.setItem('token', data.token || 'session')
+authState.value.token = data.token || 'session'
+localStorage.setItem('user', JSON.stringify(data.user || { email }))
+
+authState.value.user = data.user || { email }
+authState.value.isAuthenticated = true
+
 
       if (data.token) {
         localStorage.setItem('token', data.token)
@@ -58,25 +66,36 @@ export function useAuth() {
     }
   }
 
-  function logout() {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    authState.value.user = null
-    authState.value.isAuthenticated = false
-    authState.value.token = null
+  async function logout() {
+  try {
+    await fetch(`${API}/auth/logout`, {
+      method: 'GET',
+      credentials: 'include'
+    })
+  } catch (e) {
+    console.warn('Logout request failed:', e)
   }
+
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+  authState.value.user = null
+  authState.value.isAuthenticated = false
+  authState.value.token = null
+}
+
 
   function getAuthHeaders() {
     const token = authState.value.token || localStorage.getItem('token')
     return token ? { 'Authorization': `Bearer ${token}` } : {}
   }
 
-  return { 
-    user: authState.value.user,
-    isAuthenticated: authState.value.isAuthenticated,
-    token: authState.value.token,
-    login,
-    logout,
-    getAuthHeaders
-  }
+  return {
+  user: computed(() => authState.value.user),
+  isAuthenticated: computed(() => authState.value.isAuthenticated),
+  token: computed(() => authState.value.token),
+  login,
+  logout,
+  getAuthHeaders
+}
+
 }

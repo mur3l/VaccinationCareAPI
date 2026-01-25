@@ -1,53 +1,43 @@
 const { db } = require("../db");
-const Utilities = require("./Utilities");
+const bcrypt = require("bcrypt");
 
 exports.newSession = async (req, res) => {
-    console.log('=== NEW SESSION REQUEST ===');
-    console.log('Request body:', JSON.stringify(req.body));
-    console.log('LoginEmail:', req.body.LoginEmail);
-    console.log('LoginPassword exists:', !!req.body.LoginPassword);
-    console.log('LoginPassword length:', req.body.LoginPassword?.length);
-    
-    if (!req.body.LoginEmail || !req.body.LoginPassword) {
-        console.log('MISSING PARAMETERS DETECTED');
-        console.log('Has LoginEmail:', !!req.body.LoginEmail);
-        console.log('Has LoginPassword:', !!req.body.LoginPassword);
+  const { LoginEmail, LoginPassword } = req.body;
+
+  if (!LoginEmail || !LoginPassword) {
+    return res.status(400).json({ error: "Missing LoginEmail or LoginPassword" });
+  }
+
+  try {
+    const client = await db.client.findOne({
+      where: { EmailAddress: LoginEmail }
+    });
+
+    if (!client) {
+      return res.status(404).json({ error: "Client not found" });
     }
-    
-    console.log('Looking for client with email:', req.body.LoginEmail);
-    
-    try {
-        let clientToProvideSessionFor;
-        try {
-            clientToProvideSessionFor = await db.clients.findOne({ 
-                where: { EmailAddress: req.body.LoginEmail } 
-            });
-        } catch (dbError) {
-            console.log('db.clients failed, trying db.client');
-            clientToProvideSessionFor = await db.client.findOne({ 
-                where: { EmailAddress: req.body.LoginEmail } 
-            });
-        }
-        
-        console.log('Client found:', !!clientToProvideSessionFor);
-        
-        if (!clientToProvideSessionFor) {
-            console.log('CLIENT NOT FOUND IN DATABASE');
-            return res.status(404).send({ error: "Client not found" });
-        }
-        
-        console.log('Client data:', {
-            ClientID: clientToProvideSessionFor.ClientID,
-            EmailAddress: clientToProvideSessionFor.EmailAddress,
-            HasPasswordHash: !!clientToProvideSessionFor.PasswordHASH,
-            PasswordHashStart: clientToProvideSessionFor.PasswordHASH?.substring(0, 20)
-        });
-        
-    } catch (error) {
-        console.error('Session creation error:', error);
-        console.error('Error stack:', error.stack);
-        return res.status(500).send({ error: "Internal server error", details: error.message });
+
+    const ok = await bcrypt.compare(LoginPassword, client.PasswordHASH);
+    if (!ok) {
+      return res.status(401).json({ error: "Invalid email or password" });
     }
+
+    req.session.ClientID = client.ClientID;
+
+    return res.status(200).json({
+      ok: true,
+      user: {
+        ClientID: client.ClientID,
+        EmailAddress: client.EmailAddress,
+        FullName: client.FullName
+      }
+
+    });
+
+  } catch (error) {
+    console.error("Session creation error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
 };
 
 //As an app developer, I want to authenticat a valid existing Session. for any User that authenticates Branch

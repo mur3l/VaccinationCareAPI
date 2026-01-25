@@ -57,46 +57,27 @@ export default {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="item in items" :key="item.VaccinationID || item.id">
-        <td>{{ item.VaccinationID || item.id }}</td>
-        <td>{{ item.VaccineName || item.name }}</td>
-        <td>{{ item.Manufacturer || item.manufacturer }}</td>
-        <td>{{ item.TargetDisease || item.targetDisease }}</td>
-        <td>{{ item.RequiredDoses || item.requiredDoses }}</td>
-        <td>{{ item.Description || item.description }}</td>
-        <td class="actions">
-          <!-- View Button -->
-          <button 
-            @click="viewVaccine(item.VaccinationID || item.id)" 
-            class="btn-view"
-            v-if="$route.name !== 'singleVaccine'"
-          >
-            View
-          </button>
-          
-          <!-- Edit Button -->
-          <button 
-            @click="editVaccine(item)" 
-            class="btn-edit"
-          >
-            Edit
-          </button>
-          
-          <!-- Delete Button -->
-          <button 
-            @click="deleteVaccine(item.VaccinationID || item.id)" 
-            class="btn-delete"
-          >
-            Delete
-          </button>
-          
-          <!-- Or use updateVaccine to navigate to edit page -->
-          <!-- <button @click="updateVaccine(item.VaccinationID)" class="btn-edit">
-            Edit Page
-          </button> -->
-        </td>
-      </tr>
-    </tbody>
+  <tr v-if="items.length === 0">
+    <td colspan="7">No vaccines</td>
+  </tr>
+
+  <tr v-for="item in items" :key="item.VaccineID">
+    <td>{{ item.VaccineID }}</td>
+    <td>{{ item.Name }}</td>
+    <td>{{ item.Clinic }}</td>
+    <td>{{ item.Appointment }}</td>
+    <td>{{ item.Location }}</td>
+    <td>{{ item.BestBefore }}</td>
+    <td class="actions">
+      <button @click="viewVaccine(item.VaccineID)" class="btn-view" v-if="$route.name !== 'singleVaccine'">
+        View
+      </button>
+      <button @click="editVaccine(item)" class="btn-edit">Edit</button>
+      <button @click="deleteVaccine(item.VaccineID)" class="btn-delete">Delete</button>
+    </td>
+  </tr>
+</tbody>
+
   </table>
 </template>
 

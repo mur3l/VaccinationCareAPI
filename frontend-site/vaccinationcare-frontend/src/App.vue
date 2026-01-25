@@ -2,41 +2,40 @@
   <div id="app">
     <!-- Navigation ALATI nähtav -->
     <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link> |
-      <router-link to="/vaccines">Vaccines</router-link> |
+  <router-link to="/">Home</router-link> |
+  <router-link to="/about">About</router-link> |
+  <router-link to="/vaccines">Vaccines</router-link> |
       
       <!-- Kui välja logitud - näita Log In ja Register linke -->
       <template v-if="!isAuthenticated">
-        <router-link to="/login">Log In</router-link> |
-        <router-link to="/signup">Register</router-link>
-      </template>
+    <router-link to="/login">Log In</router-link> |
+    <router-link to="/signup">Register</router-link>
+  </template>
       
       <!-- Kui sisse logitud - näita Logout nuppu -->
       <template v-else>
-        <button @click="logout" style="float: right;">Logout</button>
-      </template>
+    <button @click="logout" style="float:right;">Log Out</button>
+  </template>
     </nav>
     <router-view />
   </div>
 </template>
 
 <script setup>
-import { useRouter, useRoute } from 'vue-router'
-import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuth } from './composables/useAuth'
 
 const router = useRouter()
-const route = useRoute()
-const { logout: authLogout } = useAuth()
 
-const isLoginPage = computed(() => route.path === '/login')
+const { logout: authLogout, isAuthenticated } = useAuth()
 
-function logout() {
-  authLogout()
+async function logout() {
+  await authLogout()
   router.push('/login')
 }
 </script>
+
+
 
 <style>
 #app {
