@@ -23,19 +23,22 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
 import { useAuth } from './composables/useAuth'
 
 const router = useRouter()
 
-const { logout: authLogout, isAuthenticated } = useAuth()
+const { logout: authLogout, isAuthenticated, checkSession } = useAuth()
+
+onMounted(() => {
+  checkSession()
+})
 
 async function logout() {
   await authLogout()
   router.push('/login')
 }
 </script>
-
-
 
 <style>
 #app {
