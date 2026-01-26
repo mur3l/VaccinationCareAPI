@@ -71,25 +71,24 @@ const router = createRouter({
 })
 
 // Navigation guard - kontrolli autentimist
+const API = 'http://localhost:8080'
+
 router.beforeEach(async (to, from, next) => {
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  const requiresAuth = to.matched.some(r => r.meta.requiresAuth)
 
   let isAuthenticated = false
   try {
-    const res = await fetch('http://localhost:8080/sessions/me', { credentials: 'include' })
+    const res = await fetch(`${API}/sessions/me`, {
+      method: 'GET',
+      credentials: 'include'
+    })
     isAuthenticated = res.ok
   } catch (e) {
     isAuthenticated = false
   }
 
-  if (requiresAuth && !isAuthenticated) {
-    return next('/login')
-  }
-
-  if ((to.path === '/login' || to.path === '/signup') && isAuthenticated) {
-    return next('/vaccines')
-  }
-
+  if (requiresAuth && !isAuthenticated) return next('/login')
+  if ((to.path === '/login' || to.path === '/signup') && isAuthenticated) return next('/vaccines')
   return next()
 })
 
