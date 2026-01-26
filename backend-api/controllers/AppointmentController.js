@@ -17,7 +17,8 @@ const getAppointment = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-    const { ClientID, ClinicID, Date } = req.body;
+    const ClientID = req.session.ClientID;
+    const { ClinicID, Date } = req.body;
 
     if (!ClientID || !ClinicID || !Date) {
         return res.status(400).send({ error: "Missing required parameters." });

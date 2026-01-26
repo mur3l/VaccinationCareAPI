@@ -76,7 +76,8 @@ exports.removeSession = async (req, res) => {
       return res.status(500).json({ error: "Server error" });
     }
 
-    res.clearCookie("connect.sid");
+    res.clearCookie("sid", {httpOnly: true, sameSite: "lax"});
     return res.status(200).json({ ok: true });
   });
 };
+

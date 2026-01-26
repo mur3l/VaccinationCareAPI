@@ -29,6 +29,9 @@ module.exports = (app) => {
   app.route("/client/:ClientID")
     .get(ClientController.getbyID);
 
+  app.route("auth/logout")
+    .get(SessionsController.removeSession)
+    
   app.route("/auth/:LoginEmail")
     .get(ClientController.getByEmail);
 

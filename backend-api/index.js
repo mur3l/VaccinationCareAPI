@@ -16,6 +16,7 @@ const swaggerDocument = yamljs.load('./docs/swagger.yaml');
 const { sync } = require("./db");
 
 app.use(cors({
+  name: 'sid',
   origin: ['http://localhost:8081', 'http://localhost:8080'],
   credentials: true
 }));
