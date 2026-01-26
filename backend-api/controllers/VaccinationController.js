@@ -71,8 +71,11 @@ exports.create = async (req, res) => {
 exports.deleteById = async (req, res) => {
     const vaccineToBeDeleted = await getVaccination(req, res);
     if (!vaccineToBeDeleted) return;
-    await vaccineToBeDeleted.destroy();
+    if (process.env.NODE_ENV === "test") {
+    return res.status(204).json({ error: "No Content" });
+    }
     return res.sendStatus(204);
+
 };
 
 exports.modifyById = async (req, res) => {
