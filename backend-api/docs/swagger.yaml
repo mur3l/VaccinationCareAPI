@@ -137,6 +137,25 @@ paths:
                 required: true
                 type: string
     /client:
+        get:
+            tags:
+                - client
+            responses:
+                '200':
+                    description: Returns a list of Client
+                    schema:
+                        type: array
+                        items:
+                            type: string
+                    examples:
+                        application/json:
+                            -
+                                FullName: rltme8gav
+                                EmailAddress: ''
+                                PasswordHASH: ''
+                                PhoneNumber2FA: ''
+            summary: Get all the <Vaccine> in API
+            description: Return all Clients that are registered in API
         post:
             responses:
                 '201':
@@ -160,6 +179,357 @@ paths:
                                 error: y46k
             summary: Add a new Client to the app
             description: Enables client signup functions and further usage
+    /appointments:
+        get:
+            responses:
+                '200':
+                    description: Returns a list of Appointments
+                    schema:
+                        $ref: '#/definitions/new-Appointment'
+                    examples:
+                        application/json:
+                            -
+                                Clinic: {}
+                                Date: {}
+                                EmailAddress: {}
+                                FullName: {}
+                '404':
+                    description: Returns 404 when object Appointment is not found by the given appointmentsID
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: ''
+            summary: Get full details of a <Appointment>
+        delete:
+            responses:
+                '204':
+                    description: Returns "No content" when remove of <Appointment> is successful.
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: cyek
+                '404':
+                    description: 'Returns error, when <Appointment> with specified ID does NOT exist'
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: h
+            summary: Delete a <Appointment> from the App
+    '/client/{ClientID}':
+        get:
+            tags:
+                - client
+            parameters:
+                -
+                    name: ClientID
+                    description: iD of Client
+                    in: path
+                    required: true
+                    type: string
+            responses:
+                '200':
+                    description: Returns all details of the given <Client>
+            summary: Get full details of a <Client>
+            description: Will return all details of a given <Client> based on ClientID given
+        put:
+            tags:
+                - client
+            parameters:
+                -
+                    name: ClientID
+                    description: Client of ID
+                    in: path
+                    required: true
+                    type: string
+                -
+                    name: body
+                    in: body
+            responses:
+                '201':
+                    description: Returns "Client updated successfully" 201 upon succesful modification of CLient
+                    schema:
+                        $ref: '#/definitions/new-Client'
+                    examples:
+                        application/json:
+                            -
+                                FullName: eyb
+                                EmailAddress: ''
+                                PasswordHASH: ''
+                                PhoneNumber2FA: ''
+                '400':
+                    description: Returns bad request 400 when one or multiple required parameters are missing
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: Missing required parameters
+                '404':
+                    description: >-
+                        Returns 404 when object Client that is to be modified, is not found by the given
+                        VaccineID
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: Client not found
+        delete:
+            tags:
+                - client
+            parameters:
+                -
+                    name: ClientID
+                    description: ID of Client
+                    in: path
+                    required: true
+                    type: string
+            responses:
+                '204':
+                    description: Returns "No content" when remove of <Client> is successful.
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: d6i
+                '404':
+                    description: 'Returns error "Client not found", when <Client> with specified ID does NOT exist.'
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: ''
+            summary: Delete a <Client> from the App
+            description: Deletes and entry from the app.
+    '/appointments/{AppoinmentID}':
+        get:
+            responses:
+                '200':
+                    description: Returns a list of Appointments
+                    schema:
+                        $ref: '#/definitions/new-Appointment'
+                    examples:
+                        application/json:
+                            -
+                                Clinic: {}
+                                Date: {}
+                                EmailAddress: {}
+                                FullName: {}
+                '404':
+                    description: Returns 404 when object Appointment is not found by the given appointmentsID
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: ''
+            summary: Get full details of a <Appointment>
+        put:
+            responses:
+                '200':
+                    description: Send 200 when appointment is successfully updated.
+                    schema:
+                        $ref: '#/definitions/new-Appointment'
+                    examples:
+                        application/json:
+                            -
+                                Clinic: {}
+                                Date: {}
+                                EmailAddress: {}
+                                FullName: {}
+                '400':
+                    description: Returns bad request 400 when one or multiple required parameters are missing.
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: Missing required parameters.
+                '404':
+                    description: >-
+                        Returns 404 when object Appointment that is to be modified, is not found by the given
+                        appointmentsID
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: d
+            summary: Update appointment
+        delete:
+            responses:
+                '204':
+                    description: Returns "No content" when remove of <Appointment> is successful.
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: cyek
+                '404':
+                    description: 'Returns error, when <Appointment> with specified ID does NOT exist'
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: h
+            summary: Delete a <Appointment> from the App
+    '/auth/{LoginEmail}':
+        get:
+            tags:
+                - Client
+                - Auth
+            responses:
+                '200':
+                    description: Returns 200 when user with email address is found
+                    schema:
+                        type: array
+                        items:
+                            type: string
+                '400':
+                    description: Returns bad request when parameters are missing.
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: Missing parameter for logging in
+                '404':
+                    description: Return error 404 when user not found
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: User not found
+            summary: Get a client by their Email address
+        parameters:
+            -
+                name: LoginEmail
+                description: Email by which the user is logging in
+                in: path
+                required: true
+                type: string
+    /sessions:
+        post:
+            tags:
+                - Users
+                - Auth
+            parameters:
+                -
+                    name: body
+                    description: Data of the User
+                    schema:
+                        $ref: '#/definitions/login-User'
+                    in: body
+                    required: true
+            responses:
+                '200':
+                    description: Returns selected user data for site functioning.
+                    schema:
+                        $ref: '#/definitions/loggedIn-user'
+                    examples:
+                        application/json:
+                            -
+                                UserID: ''
+                                DisplayName: xsn6
+                                EmailAddress: klfce7
+                                IsAdmin: false
+                '400':
+                    description: Returns bad request when parameters are missing.
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: Missing parameter for logging in
+                '401':
+                    description: Returns 401 Unauthorized when incorrect data is inserted.
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: Password mismatch
+                '404':
+                    description: Return error 404 when useer not found
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: User not found
+            summary: Make session get cookie
+    /sessions/me:
+        get:
+            tags:
+                - Users
+                - Auth
+            responses:
+                '200':
+                    description: 'Respond 200, when refresh of login succesful'
+                    schema:
+                        $ref: '#/definitions/loggedIn-user'
+                    examples:
+                        application/json:
+                            -
+                                UserID: ''
+                                DisplayName: w
+                                EmailAddress: ''
+                                IsAdmin: false
+                '401':
+                    description: 'Returns 401 Unauthorized, when reauthentification of User unsuccesful'
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: Session expired please log in again
+            summary: Endpoint to refresh login
+    /auth/logout:
+        delete:
+            tags:
+                - Users
+                - Auth
+            responses:
+                '200':
+                    description: 'Respond 200 OK, when removal of session and logout of user is successfull'
+                    schema:
+                        type: array
+                        items:
+                            type: string
+                    examples:
+                        application/json:
+                            -
+                                - ok
+                                - 'true'
+                '401':
+                    description: 'Respond 401 Unauthorized, when user is trying to logout, withouth being logged in.'
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: User is not logged in
+                '500':
+                    description: 'Respond 500, when attempting to delete, but uncaught error occurs.'
+                    schema:
+                        $ref: '#/definitions/error'
+                    examples:
+                        application/json:
+                            -
+                                error: 'Server error, please hold'
+            summary: 'Remove session, when the User logs out.'
+            description: Remove user
 definitions:
     new-Vaccine:
         title: Root Type for new-Vaccine
@@ -228,3 +598,45 @@ definitions:
             EmailAddress: a@b.com
             PasswordHASH: abc123
             PhoneNumber2FA: 372 1234567
+    new-Appointment:
+        description: ''
+        type: object
+        properties:
+            Clinic:
+                description: ''
+            Date:
+                description: ''
+            EmailAddress:
+                description: ''
+            FullName:
+                description: ''
+    login-User:
+        title: Root Type for login-User
+        description: Data that the User provides upon an a attempt to login
+        type: object
+        properties:
+            LoginEmail:
+                type: string
+            LoginPassword:
+                type: string
+        example:
+            LoginEmail: a@b.com
+            LoginPassword: '1234'
+    loggedIn-user:
+        title: Root Type for loggedIn-user
+        description: 'Data of the user, that is returned upon successful new session, or reauthenticating old session.'
+        type: object
+        properties:
+            UserID:
+                type: string
+            DisplayName:
+                type: string
+            EmailAddress:
+                type: string
+            IsAdmin:
+                type: boolean
+        example:
+            UserID: ...
+            DisplayName: aabits
+            EmailAddress: a@b.com
+            IsAdmin: false

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "starts": "concurrently \"cd backend-api && nodemon ."
+    "start": "concurrently \"cd backend-api && nodemon .\" \"cd frontend-site\\vaccinationcare-frontend && npm run serve\""
   },
   "repository": {
     "type": "git",
@@ -18,8 +18,13 @@
     "url": "https://github.com/mur3l/VaccinationCareAPI/issues"
   },
   "homepage": "https://github.com/mur3l/VaccinationCareAPI#readme",
-  "dependencies": {
-    "concurrently": "^9.2.1"
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.11"
   },
-  "devDependencies": {}
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "connect-session-sequelize": "^8.0.4",
+    "express-session": "^1.18.2"
+  }
 }

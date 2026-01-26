@@ -1,6 +1,6 @@
 const { db } = require("../db");
 const Utilities = require("./Utilities");
-const { v4: uuidv4 } = require("uuid");
+const UUID = require("uuid");
 
 const getAppointment = async (req, res) => {
     try {
@@ -17,35 +17,27 @@ const getAppointment = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-  // NB: kasuta täpselt neid key nimesid, mis su modelis/Swaggeris on
-  const required = ["ClinicID", "ClientID", "Date", "VaccineID"];
+    const { ClientID, ClinicID, Date } = req.body;
 
-  for (const k of required) {
-    if (!req.body[k]) {
-      return res.status(400).json({ error: `Missing parameter: ${k}` });
+    if (!ClientID || !ClinicID || !Date) {
+        return res.status(400).send({ error: "Missing required parameters." });
     }
-  }
 
-  try {
-    const newAppointment = {
-      AppointmentID: uuidv4(),
-      ClinicID: req.body.ClinicID,
-      ClientID: req.body.ClientID,
-      Date: req.body.Date,
-      VaccineID: req.body.VaccineID,
-    };
+    try {
+        const newAppointment = await db.appointment.create({
+            AppointmentID: UUID.v7(),
+            ClientID,
+            ClinicID,
+            Date
+        });
 
-    const created = await db.appointment.create(newAppointment);
-
-    return res
-      .status(201)
-      .location(`${Utilities.getBaseURL(req)}/appointments/${created.AppointmentID}`)
-      .json(created);
-
-  } catch (err) {
-    console.error("Error creating appointment:", err);
-    return res.status(500).json({ error: err.message });
-  }
+        return res
+            .location(`${Utilities.getBaseURL(req)}/appointments/${newAppointment.AppointmentID}`)
+            .status(201)
+            .json(newAppointment);
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
 };
 
 exports.modifyById = async (req, res) => {
