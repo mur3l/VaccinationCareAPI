@@ -12,10 +12,8 @@ export default {
     async deleteVaccine(id) {
       if (confirm("Are you sure you want to delete this vaccine?")) {
         const res = await fetch(`http://localhost:8080/vaccination/${id}`, {
-        method: "DELETE",
-        credentials: "include"
+          method: "DELETE",
         });
-
 
         if (res.ok) {
           this.$emit("deleted", id);
@@ -74,7 +72,7 @@ export default {
       <button @click="viewVaccine(item.VaccineID)" class="btn-view" v-if="$route.name !== 'singleVaccine'">
         View
       </button>
-      <button @click="updateVaccine(item.VaccineID)" class="btn-edit">Edit</button>
+      <button @click="editVaccine(item)" class="btn-edit">Edit</button>
       <button @click="deleteVaccine(item.VaccineID)" class="btn-delete">Delete</button>
     </td>
   </tr>

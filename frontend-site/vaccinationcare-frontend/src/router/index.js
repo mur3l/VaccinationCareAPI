@@ -1,9 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import VaccinesView from '../views/VaccinesView.vue'
-import ModifyVaccineView from '../views/ModifyVaccineView.vue'
-import SingleVaccineView from '../views/SingleVaccineView.vue'
-import AddVaccineView from '../views/AddVaccineView.vue'
 import HomeView from '../views/HomeView.vue'
 import AboutView from '../views/AboutView.vue'
 import SignUpView from '../views/RegisterView.vue'
@@ -37,31 +34,7 @@ const routes = [
     name: 'Vaccines',
     component: VaccinesView,
     meta: { requiresAuth: true } 
-  },
-  {
-  path: '/vaccines/new',
-  name: 'addVaccine',
-  component: AddVaccineView,
-  meta: { requiresAuth: true }
-},
-{
-  path: '/vaccines/:id',
-  name: 'singleVaccine',
-  component: SingleVaccineView,
-  meta: { requiresAuth: true }
-},
-{
-  path: '/vaccines/:id/edit',
-  name: 'modifyVaccine',
-  component: ModifyVaccineView,
-  meta: { requiresAuth: true }
-},
-{
-  path: '/appointments/new',
-  name: 'addAppointment',
-  component: AddAppointmentView,
-  meta: { requiresAuth: true }
-},
+  }
 ]
 
 // Loo router eksemplar
