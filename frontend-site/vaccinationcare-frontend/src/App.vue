@@ -1,3 +1,4 @@
+<!-- App.vue - Fixed to properly handle auth -->
 <template>
   <div id="app">
     <!-- Navigation -->
@@ -6,13 +7,13 @@
       <router-link to="/about">About</router-link> |
       <router-link to="/vaccines">Vaccines</router-link> |
 
-      <!-- Ainult sisselogitud kasutajale -->
+      <!-- Only for logged in user -->
       <template v-if="isAuthenticated">
         <router-link to="/appointments">Appointments</router-link> |
-        <button @click="logout" style="float:right;">Log Out</button>
+        <button @click="logout" class="logout-btn">Log Out</button>
       </template>
 
-      <!-- Ainult välja logitud kasutajale -->
+      <!-- Only for logged out user -->
       <template v-else>
         <router-link to="/login">Log In</router-link> |
         <router-link to="/signup">Register</router-link>
@@ -25,18 +26,73 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useAuth } from './composables/useAuth'
 
 const router = useRouter()
 const { logout: authLogout, isAuthenticated, checkSession } = useAuth()
 
-onMounted(() => {
-  checkSession()
+onMounted(async () => {
+  console.log("App.vue mounted")
+  await checkSession()
+})
+
+// Watch route changes to ensure auth is checked
+watch(() => router.currentRoute.value, async () => {
+  await checkSession()
 })
 
 async function logout() {
-  await authLogout()
-  router.push('/login')
+  console.log("User clicked Logout button")
+  
+  try {
+    await authLogout()
+    console.log("Logout successful")
+    
+    // Force reload to clear all state
+    window.location.href = '/login'
+    
+  } catch (error) {
+    console.error('Logout error:', error)
+    window.location.href = '/login'
+  }
 }
 </script>
+
+<style>
+.logout-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+}
+
+.logout-btn:hover {
+  background-color: #d32f2f;
+}
+
+nav {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 20px;
+}
+
+nav a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: #007bff;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+nav a.router-link-exact-active {
+  color: #0056b3;
+  font-weight: bold;
+}
+</style>

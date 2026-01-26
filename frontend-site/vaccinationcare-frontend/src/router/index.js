@@ -1,68 +1,71 @@
+// router/index.js - Ensure proper route protection
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '../views/LoginView.vue'
-import VaccinesView from '../views/VaccinesView.vue'
-import HomeView from '../views/HomeView.vue'
-import AboutView from '../views/AboutView.vue'
-import SignUpView from '../views/RegisterView.vue'
-import AddAppointmentView from '../views/AddAppointmentView.vue'
+import { useAuth } from '../composables/useAuth'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: HomeView
+    component: () => import('../views/HomeView.vue')
   },
   {
     path: '/about',
     name: 'About',
-    component: AboutView
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: LoginView,
-    meta: { requiresAuth: false } 
-  },
-  {
-    path: '/signup',
-    name: 'SignUp',
-    component: SignUpView,
-    meta: { requiresAuth: false }
+    component: () => import('../views/AboutView.vue')
   },
   {
     path: '/vaccines',
     name: 'Vaccines',
-    component: VaccinesView,
-    meta: { requiresAuth: true } 
+    component: () => import('../views/VaccinesView.vue'),
+    meta: { requiresAuth: true } // THIS IS CRITICAL
+  },
+  {
+    path: '/appointments',
+    name: 'Appointments',
+    component: () => import('../views/AppointmentsView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/LoginView.vue'),
+    meta: { requiresGuest: true }
+  },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: () => import('../views/SignupView.vue'),
+    meta: { requiresGuest: true }
   }
 ]
 
-// Loo router eksemplar
 const router = createRouter({
   history: createWebHistory(),
   routes
 })
 
-// Navigation guard - kontrolli autentimist
-const API = 'http://localhost:8080'
-
+// GLOBAL ROUTE GUARD - This prevents access to protected routes
 router.beforeEach(async (to, from, next) => {
-  const requiresAuth = to.matched.some(r => r.meta.requiresAuth)
-
-  let isAuthenticated = false
-  try {
-    const res = await fetch(`${API}/sessions/me`, {
-      method: 'GET',
-      credentials: 'include'
-    })
-    isAuthenticated = res.ok
-  } catch (e) {
-    isAuthenticated = false
+  const { isAuthenticated, checkSession } = useAuth()
+  
+  // Always check session first
+  await checkSession()
+  
+  // If route requires auth and user is not authenticated
+  if (to.meta.requiresAuth && !isAuthenticated.value) {
+    console.log('Route requires auth, redirecting to login')
+    next('/login')
+    return
   }
-
-  if (requiresAuth && !isAuthenticated) return next('/login')
-  if ((to.path === '/login' || to.path === '/signup') && isAuthenticated) return next('/vaccines')
-  return next()
+  
+  // If route is for guests only and user is authenticated
+  if (to.meta.requiresGuest && isAuthenticated.value) {
+    console.log('User is already logged in, redirecting to home')
+    next('/')
+    return
+  }
+  
+  next()
 })
 
 export default router
