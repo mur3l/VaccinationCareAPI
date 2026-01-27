@@ -36,6 +36,26 @@ onMounted(loadAppointments);
 function goAdd() {
   router.push({ name: "AddAppointment" });
 }
+
+async function deleteAppointment(id) {
+  if (!confirm("Delete this appointment?")) return;
+
+  try {
+    const res = await fetch(`http://localhost:8080/appointments/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(text || `Delete failed: ${res.status}`);
+    }
+
+    items.value = items.value.filter((a) => a.AppointmentID !== id);
+  } catch (e) {
+    alert(e.message || "Delete failed");
+  }
+}
 </script>
 
 <template>
@@ -56,12 +76,13 @@ function goAdd() {
           <th>ClinicID</th>
           <th>Date</th>
           <th>VaccineID</th>
+          <th>Actions</th>
         </tr>
       </thead>
 
       <tbody>
         <tr v-if="items.length === 0">
-          <td colspan="5">No appointments</td>
+          <td colspan="6">No appointments</td>
         </tr>
 
         <tr v-for="a in items" :key="a.AppointmentID">
@@ -70,6 +91,11 @@ function goAdd() {
           <td>{{ a.ClinicID }}</td>
           <td>{{ a.Date }}</td>
           <td>{{ a.VaccineID ?? "-" }}</td>
+          <td class="actions">
+            <button class="btn-delete" @click="deleteAppointment(a.AppointmentID)">
+              Delete
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -101,4 +127,17 @@ function goAdd() {
 .tbl { width: 100%; border-collapse: collapse; margin-top: 12px; }
 .tbl th, .tbl td { border-bottom: 1px solid #ddd; padding: 10px; text-align: left; }
 .tbl th { background: #f8f9fa; }
+
+.actions { display: flex; gap: 8px; align-items: center; }
+
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.btn-delete:hover { background-color: #c82333; }
 </style>

@@ -1,6 +1,10 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
+    <img
+      class="logo"
+      alt="VaccinationCare logo"
+      src="../assets/logo.jpg"
+    />
     <HelloWorld msg="Welcome to VaccinationCare" />
   </div>
 </template>
@@ -15,3 +19,17 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.home {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.logo {
+  max-width: 220px;
+  width: 100%;
+  height: auto;
+  margin-bottom: 24px;
+}
+</style>
