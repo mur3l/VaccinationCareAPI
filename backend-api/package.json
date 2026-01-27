@@ -21,16 +21,18 @@
   "homepage": "https://github.com/mur3l/VaccinationCareAPI#readme",
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "connect-session-sequelize": "^8.0.4",
+    "connect-session-sequelize": "^8.0.5",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0",
+    "express": "^5.2.1",
     "express-session": "^1.19.0",
     "mariadb": "^3.4.5",
-    "nodemon": "^3.1.11",
     "sequelize": "^6.37.7",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^8.3.2",
     "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
   }
 }

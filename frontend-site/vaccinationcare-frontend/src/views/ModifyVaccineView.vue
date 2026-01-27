@@ -80,7 +80,7 @@ async function save() {
       Clinic: form.value.Clinic,
       Appointment: form.value.Appointment ? new Date(form.value.Appointment).toISOString() : null,
       Location: form.value.Location,
-      BestBefore: Number(form.value.BestBefore),
+      BestBefore: form.value.BestBefore ? new Date(form.value.BestBefore).toISOString() : null,
     };
 
     for (const k of ["Name", "Description", "Clinic", "Appointment", "Location", "BestBefore"]) {

@@ -69,8 +69,12 @@ async function logout() {
 }
 
 nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   padding: 20px;
-  background-color: #f8f9fa;
+  background-color: #C9E5E8;
   border-bottom: 1px solid #dee2e6;
   margin-bottom: 20px;
 }
