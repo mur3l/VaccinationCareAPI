@@ -1,6 +1,6 @@
 const { db } = require("../db");
 const Utilities = require("./Utilities");
-const UUID = require("uuid");
+const { v4: uuidv4 } = require("uuid");
 
 const getVaccination = async (req, res) => {
     const id = req.params.VaccineID;
@@ -49,7 +49,7 @@ exports.create = async (req, res) => {
 
     try {
         const newVaccine = {
-            VaccineID: UUID.v7(),
+            VaccineID: uuidv4(),
             Name: req.body.Name,
             Description: req.body.Description,
             Clinic: req.body.Clinic,

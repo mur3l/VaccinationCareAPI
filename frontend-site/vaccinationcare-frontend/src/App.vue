@@ -1,22 +1,18 @@
-<!-- App.vue - Fixed to properly handle auth -->
 <template>
   <div id="app">
-    <!-- Navigation -->
     <nav>
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link> |
-      <router-link to="/vaccines">Vaccines</router-link> |
 
-      <!-- Only for logged in user -->
       <template v-if="isAuthenticated">
+        <router-link to="/vaccines">Vaccines</router-link> |
         <router-link to="/appointments">Appointments</router-link> |
         <button @click="logout" class="logout-btn">Log Out</button>
       </template>
 
-      <!-- Only for logged out user -->
       <template v-else>
         <router-link to="/login">Log In</router-link> |
-        <router-link to="/signup">Register</router-link>
+        <router-link to="/register">Register</router-link>
       </template>
     </nav>
 
@@ -37,21 +33,19 @@ onMounted(async () => {
   await checkSession()
 })
 
-// Watch route changes to ensure auth is checked
 watch(() => router.currentRoute.value, async () => {
   await checkSession()
 })
 
 async function logout() {
   console.log("User clicked Logout button")
-  
+
   try {
     await authLogout()
     console.log("Logout successful")
-    
-    // Force reload to clear all state
+
     window.location.href = '/login'
-    
+
   } catch (error) {
     console.error('Logout error:', error)
     window.location.href = '/login'

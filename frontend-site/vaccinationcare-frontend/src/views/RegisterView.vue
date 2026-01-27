@@ -51,8 +51,6 @@ export default {
           PlainPhoneNumber2FA: ""
         };
 
-        // Soovi korral suuna loginisse:
-        // this.$router.push("/login");
       } catch (_e) {
         this.errorMessage = "Failed to fetch (backend down or CORS).";
       } finally {
@@ -104,7 +102,6 @@ export default {
 </template>
 
 <style scoped>
-  /* src/assets/forms.css */
 .page-container {
   max-width: 900px;
   margin: 2rem auto;
