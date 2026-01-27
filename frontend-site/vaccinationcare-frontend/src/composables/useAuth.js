@@ -1,4 +1,3 @@
-// src/composables/useAuth.js
 import { ref, computed } from "vue";
 
 const API = "http://localhost:8080";

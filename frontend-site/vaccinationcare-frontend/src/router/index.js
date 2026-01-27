@@ -1,71 +1,108 @@
-// router/index.js - Ensure proper route protection
-import { createRouter, createWebHistory } from 'vue-router'
-import { useAuth } from '../composables/useAuth'
+import { createRouter, createWebHistory } from "vue-router";
+import { useAuth } from "../composables/useAuth";
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: () => import('../views/HomeView.vue')
+    path: "/",
+    name: "Home",
+    component: () => import("../views/HomeView.vue"),
   },
   {
-    path: '/about',
-    name: 'About',
-    component: () => import('../views/AboutView.vue')
+    path: "/about",
+    name: "About",
+    component: () => import("../views/AboutView.vue"),
+  },
+
+  {
+    path: "/login",
+    name: "Login",
+    component: () => import("../views/LoginView.vue"),
+    meta: { requiresGuest: true },
   },
   {
-    path: '/vaccines',
-    name: 'Vaccines',
-    component: () => import('../views/VaccinesView.vue'),
-    meta: { requiresAuth: true } // THIS IS CRITICAL
+    path: "/register",
+    name: "Register",
+    component: () => import("../views/RegisterView.vue"),
+    meta: { requiresGuest: true },
+  },
+
+  {
+    path: "/vaccines",
+    name: "Vaccines",
+    component: () => import("../views/VaccinesView.vue"),
+    meta: { requiresAuth: true },
   },
   {
-    path: '/appointments',
-    name: 'Appointments',
-    component: () => import('../views/AppointmentsView.vue'),
-    meta: { requiresAuth: true }
+    path: "/vaccines/new",
+    name: "newVaccine",
+    component: () => import("../views/AddVaccineView.vue"),
+    meta: { requiresAuth: true },
+  },
+
+  {
+    path: "/vaccines/:id",
+    name: "singleVaccine",
+    component: () => import("../views/SingleVaccineView.vue"),
+    meta: { requiresAuth: true },
+    props: true,
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: () => import('../views/LoginView.vue'),
-    meta: { requiresGuest: true }
+    path: "/vaccines/:id/edit",
+    name: "modifyVaccine",
+    component: () => import("../views/ModifyVaccineView.vue"),
+    meta: { requiresAuth: true },
+    props: true,
+  },
+
+  {
+    path: "/appointments",
+    name: "Appointments",
+    component: () => import("../views/AppointmentsView.vue"),
+    meta: { requiresAuth: true },
   },
   {
-    path: '/signup',
-    name: 'Signup',
-    component: () => import('../views/SignupView.vue'),
-    meta: { requiresGuest: true }
-  }
-]
+    path: "/appointments/new",
+    name: "AddAppointment",
+    component: () => import("../views/AddAppointmentView.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/appointments/:AppointmentID",
+    name: "singleAppointment",
+    component: () => import("../views/SingleAppointmentView.vue"),
+    meta: { requiresAuth: true },
+    props: true,
+  },
+  {
+    path: "/appointments/:AppointmentID/edit",
+    name: "modifyAppointment",
+    component: () => import("../views/ModifyAppointmentView.vue"),
+    meta: { requiresAuth: true },
+    props: true,
+  },
+
+];
+
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
-})
+  routes,
+});
 
-// GLOBAL ROUTE GUARD - This prevents access to protected routes
-router.beforeEach(async (to, from, next) => {
-  const { isAuthenticated, checkSession } = useAuth()
-  
-  // Always check session first
-  await checkSession()
-  
-  // If route requires auth and user is not authenticated
+router.beforeEach(async (to) => {
+  const { isAuthenticated, checkSession } = useAuth();
+
+  await checkSession();
+
   if (to.meta.requiresAuth && !isAuthenticated.value) {
-    console.log('Route requires auth, redirecting to login')
-    next('/login')
-    return
+    return { name: "Login" };
   }
-  
-  // If route is for guests only and user is authenticated
-  if (to.meta.requiresGuest && isAuthenticated.value) {
-    console.log('User is already logged in, redirecting to home')
-    next('/')
-    return
-  }
-  
-  next()
-})
 
-export default router
+  if (to.meta.requiresGuest && isAuthenticated.value) {
+    return { name: "Home" };
+  }
+
+  return true;
+});
+
+export default router;

@@ -5,39 +5,33 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 const form = ref({
-  ClinicID: "",
-  Date: "",
+  Name: "",
+  Description: "",
+  Clinic: "",
+  Appointment: "",
+  Location: "",
+  BestBefore: "", // YYYY-MM-DD
 });
 
 const error = ref("");
 const loading = ref(false);
-
-function toIso(localValue) {
-  const d = new Date(localValue);
-  return d.toISOString();
-}
 
 async function submit() {
   error.value = "";
   loading.value = true;
 
   try {
-    const payload = {
-      ClinicID: form.value.ClinicID,
-      Date: toIso(form.value.Date),
-    };
-
-    const res = await fetch("http://localhost:8080/appointments", {
+    const res = await fetch("http://localhost:8080/vaccination", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify(payload),
+      body: JSON.stringify(form.value),
     });
 
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Create failed: ${res.status}`);
 
-    router.push({ name: "Appointments" });
+    router.push({ name: "Vaccines" });
   } catch (e) {
     error.value = e.message || "Create failed";
   } finally {
@@ -48,22 +42,34 @@ async function submit() {
 
 <template>
   <div>
-    <h2>Add appointment</h2>
+    <h2>Add vaccine</h2>
 
     <div v-if="error" class="error">{{ error }}</div>
 
     <form class="form" @submit.prevent="submit">
-      <label>ClinicID</label>
-      <input v-model="form.ClinicID" placeholder="ClinicID" />
+      <label>Name</label>
+      <input v-model="form.Name" />
 
-      <label>Date</label>
-      <input type="datetime-local" v-model="form.Date" />
+      <label>Description</label>
+      <input v-model="form.Description" />
+
+      <label>Clinic</label>
+      <input v-model="form.Clinic" />
+
+      <label>Appointment</label>
+      <input v-model="form.Appointment" />
+
+      <label>Location</label>
+      <input v-model="form.Location" />
+
+      <label>BestBefore</label>
+      <input v-model="form.BestBefore" placeholder="YYYY-MM-DD" />
 
       <div class="buttons">
         <button class="btn-save" type="submit" :disabled="loading">
           {{ loading ? "Saving..." : "Save" }}
         </button>
-        <button class="btn-cancel" type="button" @click="router.push({ name: 'Appointments' })">
+        <button class="btn-cancel" type="button" @click="router.push({ name: 'Vaccines' })">
           Cancel
         </button>
       </div>

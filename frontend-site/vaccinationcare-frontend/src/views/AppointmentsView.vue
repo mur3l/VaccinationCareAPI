@@ -34,7 +34,7 @@ async function loadAppointments() {
 onMounted(loadAppointments);
 
 function goAdd() {
-  router.push({ name: "addAppointment" }); // või router.push('/appointments/new')
+  router.push({ name: "AddAppointment" });
 }
 </script>
 

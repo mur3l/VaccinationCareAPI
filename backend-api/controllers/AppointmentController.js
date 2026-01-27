@@ -1,6 +1,6 @@
 const { db } = require("../db");
 const Utilities = require("./Utilities");
-const UUID = require("uuid");
+const { v4: uuidv4 } = require("uuid");
 
 const getAppointment = async (req, res) => {
     try {
@@ -17,28 +17,28 @@ const getAppointment = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-    const ClientID = req.session.ClientID;
-    const { ClinicID, Date } = req.body;
+  const ClientID = req.session.ClientID;
+  const { ClinicID, Date } = req.body;
 
-    if (!ClientID || !ClinicID || !Date) {
-        return res.status(400).send({ error: "Missing required parameters." });
-    }
+  if (!ClientID || !ClinicID || !Date) {
+    return res.status(400).send({ error: "Missing required parameters." });
+  }
 
-    try {
-        const newAppointment = await db.appointment.create({
-            AppointmentID: UUID.v7(),
-            ClientID,
-            ClinicID,
-            Date
-        });
+  try {
+    const newAppointment = await db.appointment.create({
+      AppointmentID: uuidv4(),
+      ClientID,
+      ClinicID,
+      Date
+    });
 
-        return res
-            .location(`${Utilities.getBaseURL(req)}/appointments/${newAppointment.AppointmentID}`)
-            .status(201)
-            .json(newAppointment);
-    } catch (err) {
-        return res.status(500).json({ error: err.message });
-    }
+    return res
+      .location(`${Utilities.getBaseURL(req)}/appointments/${newAppointment.AppointmentID}`)
+      .status(201)
+      .json(newAppointment);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
 };
 
 exports.modifyById = async (req, res) => {
