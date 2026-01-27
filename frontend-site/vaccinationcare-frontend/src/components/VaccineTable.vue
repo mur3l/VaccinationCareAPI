@@ -37,11 +37,11 @@ export default {
       <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>Manufacturer</th>
-        <th>Target Disease</th>
-        <th>Required Doses</th>
         <th>Description</th>
-        <th>Actions</th>
+        <th>Clinic</th>
+        <th>Appointment</th>
+        <th>Location</th>
+        <th>BestBefore</th>
       </tr>
     </thead>
 
@@ -53,10 +53,11 @@ export default {
       <tr v-for="item in items" :key="item.VaccineID">
         <td>{{ item.VaccineID }}</td>
         <td>{{ item.Name }}</td>
-        <td>{{ item.Manufacturer }}</td>
-        <td>{{ item.TargetDisease }}</td>
-        <td>{{ item.RequiredDoses }}</td>
         <td>{{ item.Description }}</td>
+        <td>{{ item.Clinic }}</td>
+        <td>{{ item.Appointment }}</td>
+        <td>{{ item.Location }}</td>
+        <td>{{ item.BestBefore }}</td>
 
         <td class="actions">
           <button

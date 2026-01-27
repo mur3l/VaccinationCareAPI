@@ -14,7 +14,7 @@ const form = ref({
   Name: "",
   Clinic: "",
   Appointment: "",
-  BestBefore: 0,
+  BestBefore: "",
   Description: "",
   Location: "",
 });
@@ -129,28 +129,28 @@ onMounted(load);
       </div>
 
       <div class="row">
-        <label>Manufacturer</label>
-        <input v-model.trim="form.Clinic" required />
-      </div>
-
-      <div class="row">
-        <label>Target Disease</label>
-        <input v-model="form.Appointment" type="datetime-local" required />
-      </div>
-
-      <div class="row">
-        <label>Required Doses</label>
-        <input v-model.number="form.BestBefore" type="number" min="0" required />
-      </div>
-
-      <div class="row">
         <label>Description</label>
-        <textarea v-model.trim="form.Description" rows="4" required />
+        <input v-model.trim="form.Description" required />
+      </div>
+
+      <div class="row">
+        <label>Clinic</label>
+        <input v-model="form.Clinic" required />
+      </div>
+
+      <div class="row">
+        <label>Appointment</label>
+        <input type="datetime-local" v-model="form.Appointment" required />
       </div>
 
       <div class="row">
         <label>Location</label>
         <input v-model.trim="form.Location" required />
+      </div>
+
+      <div class="row">
+        <label>BestBefore</label>
+        <input v-model.trim="form.BestBefore" type="datetime-local" required />
       </div>
 
       <div class="actions">

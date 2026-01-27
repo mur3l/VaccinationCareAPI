@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false
             },
             BestBefore: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.DATE,
                 allowNull: false
             }
         },
